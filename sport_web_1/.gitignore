@@ -1,4 +1,6 @@
+#config file
 application.properties
+
 
 HELP.md
 .gradle
