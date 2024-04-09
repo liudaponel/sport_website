@@ -21,16 +21,16 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping(value = "/set-cookie")
-    public ResponseEntity<?> setCookie(HttpServletResponse response) throws IOException {
-        Cookie cookie = new Cookie("data", "Come_to_the_dark_side");//создаем объект Cookie,
-        //в конструкторе указываем значения для name и value
-        cookie.setPath("/");//устанавливаем путь
-        cookie.setMaxAge(86400);//здесь устанавливается время жизни куки
-        response.addCookie(cookie);//добавляем Cookie в запрос
-        response.setContentType("text/plain");//устанавливаем контекст
-        return ResponseEntity.ok().body(HttpStatus.OK);//получилось как бы два раза статус ответа установили, выбирайте какой вариант лучше
-    }
+//    @GetMapping(value = "/set-cookie")
+//    public ResponseEntity<?> setCookie(HttpServletResponse response) throws IOException {
+//        Cookie cookie = new Cookie("data", "Come_to_the_dark_side");//создаем объект Cookie,
+//        //в конструкторе указываем значения для name и value
+//        cookie.setPath("/");//устанавливаем путь
+//        cookie.setMaxAge(86400);//здесь устанавливается время жизни куки
+//        response.addCookie(cookie);//добавляем Cookie в запрос
+//        response.setContentType("text/plain");//устанавливаем контекст
+//        return ResponseEntity.ok().body(HttpStatus.OK);//получилось как бы два раза статус ответа установили, выбирайте какой вариант лучше
+//    }
 
     // Create a new user
     @CrossOrigin(origins = "http://localhost:3000")
@@ -43,15 +43,15 @@ public class UserController {
         return null;
     }
 
-    // LogIn user
-    @CrossOrigin(origins = "http://localhost:3000")
-    @PostMapping("/login")
-    public boolean LogInUser(@RequestBody @Valid User user) {
-        if(userService.checkPassword(user)){
-            throw new CustomException("Введены неверные данные или пароль");
-        }
-        return true;
-    }
+//    // LogIn user
+//    @CrossOrigin(origins = "http://localhost:3000")
+//    @PostMapping("/login")
+//    public boolean LogInUser(@RequestBody @Valid User user) {
+//        if(userService.checkPassword(user)){
+//            throw new CustomException("Введены неверные данные или пароль");
+//        }
+//        return true;
+//    }
 
     // Get all users
     @CrossOrigin(origins = "http://localhost:3000")

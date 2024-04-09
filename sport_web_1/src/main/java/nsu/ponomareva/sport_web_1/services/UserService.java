@@ -1,14 +1,18 @@
 package nsu.ponomareva.sport_web_1.services;
 
+import nsu.ponomareva.sport_web_1.auth.AuthenticationService;
 import nsu.ponomareva.sport_web_1.models.Role;
 import nsu.ponomareva.sport_web_1.models.User;
 import nsu.ponomareva.sport_web_1.repository.RoleRepository;
 import nsu.ponomareva.sport_web_1.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -19,12 +23,12 @@ public class UserService {
     private RoleRepository roleRepository;
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     // Create a new user
     public User createUser(User user) {
-        User userFromDB = userRepository.findUserByInfo(user.getFio(), user.getEmail(), user.getPhone_number());
-
-        if (userFromDB != null) {
+        var userFromDB = userRepository.findByEmail(user.getEmail());
+        if (userFromDB.isEmpty()) {
             return null;
         }
 
@@ -34,14 +38,12 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public boolean checkPassword(User user) {
-        User userFromDB = userRepository.findUserByInfo(user.getFio(), user.getEmail(), user.getPhone_number(), passwordEncoder.encode(user.getPassword()));
-
-        if(userFromDB != null){
-            return true;
+    public boolean isPasswordCorrect(String email, String password) {
+        var userFromDB = userRepository.findByEmail(email);
+        if(userFromDB.isEmpty()){
+            return false;
         }
-
-        return false;
+        return passwordEncoder.matches(password, userFromDB.get().getPassword());
     }
 
     // Get all users
