@@ -9,21 +9,23 @@ import TextField from '@mui/material/TextField';
 import axios from 'axios'
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
-import { UserContext } from '../addition/UserContext';
-import { RoleContext } from '../addition/UserContext';
 import * as constList from '../addition/Constants.js';
 import '../styles/LoginDialog.css'
 
-function LoginDialog({ open, onClose }) {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const login = () => {
-        setIsLoggedIn(true);
-    };
-    const logout = () => {
-        setIsLoggedIn(false);
-    };
-    const [role, setRole] = useState(false);
+function decodeAndSaveToken(token) {
+    const [headerEncoded, payloadEncoded] = token.split('.');
+    const base64 = payloadEncoded.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    const user = JSON.parse(jsonPayload);
 
+    localStorage.setItem('token', token);
+    localStorage.setItem('email', user.sub);
+    localStorage.setItem('role', user.role[0].authority);
+}
+
+function LoginDialog({ open, onClose }) {
     const [fio, setFio] = useState('');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
@@ -42,12 +44,12 @@ function LoginDialog({ open, onClose }) {
 
         axios.post(urlSignIn, user)
         .then(response => {
+            console.log('Response: ', response)
             alert("Вход выполнен успешно!");
-            login();
+            decodeAndSaveToken(response.data.access_token);
             onClose();
         })
         .catch(error => {
-            logout();
             console.error('Error:', error);
             console.log(error.response.data);
             alert(error.response.data.message);
@@ -65,9 +67,9 @@ function LoginDialog({ open, onClose }) {
 
         axios.post(urlSignUp, user)
         .then(response => {
-            const message = response.message;
-            console.log(message);
-            alert("Регистрация прошла успешно! Теперь войдите в новый аккаунт");
+            console.log('Response: ', response);
+            alert("Регистрация прошла успешно!");
+            decodeAndSaveToken(response.data.access_token);
             onClose();
         })
         .catch(error => {
@@ -87,7 +89,6 @@ function LoginDialog({ open, onClose }) {
     };
 
     return (
-    <UserContext.Provider value={{ isLoggedIn, login, logout }}>
         <Dialog open={open} onClose={onClose}>
             <DialogTitle sx={{ fontSize: 20, display: 'flex', justifyContent: 'space-between' }}>
                 <span>{isRegistering ? 'Регистрация' : 'Вход'}</span>
@@ -180,7 +181,6 @@ function LoginDialog({ open, onClose }) {
             )}
         </DialogActions>
         </Dialog>
-    </UserContext.Provider>
   );
 }
 
