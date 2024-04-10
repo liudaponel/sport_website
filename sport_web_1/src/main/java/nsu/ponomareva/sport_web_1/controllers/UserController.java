@@ -19,13 +19,13 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
     @Autowired
     private UserService userService;
 
     // Create a new user
-    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping
     public User createUser(@RequestBody @Valid User user) {
         User createdUser = userService.createUser(user);
@@ -35,40 +35,25 @@ public class UserController {
         return null;
     }
 
-//    // LogIn user
-//    @CrossOrigin(origins = "http://localhost:3000")
-//    @PostMapping("/login")
-//    public boolean LogInUser(@RequestBody @Valid User user) {
-//        if(userService.checkPassword(user)){
-//            throw new CustomException("Введены неверные данные или пароль");
-//        }
-//        return true;
-//    }
-
     // Get all users
-//    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping
     public List<User> getAllUsers() {
-        logger.info("getting");
         return userService.getAllUsers();
     }
 
     // Get user by ID
-    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/{id}")
     public Optional<User> getUserById(@PathVariable Long id) {
         return userService.getUserById(id);
     }
 
     // Update user by ID
-    @CrossOrigin(origins = "http://localhost:3000")
     @PutMapping("/{id}")
     public User updateUser(@PathVariable Long id, @RequestBody User userDetails) {
         return userService.updateUser(id, userDetails);
     }
 
     // Delete all users
-    @CrossOrigin(origins = "http://localhost:3000")
     @DeleteMapping
     public String deleteAllUsers() {
         userService.deleteAllUsers();
@@ -76,7 +61,6 @@ public class UserController {
     }
 
     // Delete user by ID
-    @CrossOrigin(origins = "http://localhost:3000")
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);

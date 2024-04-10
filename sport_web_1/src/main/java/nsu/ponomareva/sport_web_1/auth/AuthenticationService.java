@@ -9,9 +9,11 @@ import nsu.ponomareva.sport_web_1.exceptions.CustomException;
 import nsu.ponomareva.sport_web_1.repository.RoleRepository;
 import nsu.ponomareva.sport_web_1.repository.UserRepository;
 import nsu.ponomareva.sport_web_1.security.JwtService;
+import nsu.ponomareva.sport_web_1.security.UserDetailsImpl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
@@ -32,7 +34,7 @@ public class AuthenticationService {
   private static final Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
 
   public String register(User request) {
-    var user = User.builder()
+    var user = UserDetailsImpl.builder()
         .fio(request.getFio())
         .email(request.getEmail())
         .password(passwordEncoder.encode(request.getPassword()))
@@ -40,26 +42,31 @@ public class AuthenticationService {
         .role(roleRepository.findByName("Пользователь"))
         .build();
     var userFromDB = this.repository.findByEmail(user.getEmail());
-    if(userFromDB.isPresent()){
+    if(userFromDB.isPresent()) {
       logger.info("найден пользователь с такими данными");
       return null;
     }
-    repository.save(user);
+    repository.save(request);
     return jwtService.generateToken(user);
   }
 
   public String authenticate(AuthenticationRequest request) {
-    authenticationManager.authenticate(
-        new UsernamePasswordAuthenticationToken(
-            request.getEmail(),
-            request.getPassword()
-        )
-    );
+    try {
+      authenticationManager.authenticate(
+              new UsernamePasswordAuthenticationToken(
+                      request.getEmail(),
+                      request.getPassword()
+              )
+      );
+    }
+    catch (AuthenticationException ex){
+      throw new CustomException("Введен неверный адрес или пароль");
+    }
     var user = repository.findByEmail(request.getEmail());
     if(user.isEmpty()){
       return null;
     }
-    return jwtService.generateToken(user.get());
+    return jwtService.generateToken(new UserDetailsImpl(user.get()));
   }
 
   public void refreshToken(
@@ -77,8 +84,8 @@ public class AuthenticationService {
     if (userEmail != null) {
       var user = this.repository.findByEmail(userEmail)
               .orElseThrow();
-      if (jwtService.isTokenExpired(refreshToken, user)) {
-        var accessToken = jwtService.generateToken(user);
+      if (jwtService.isTokenExpired(refreshToken, new UserDetailsImpl(user))) {
+        var accessToken = jwtService.generateToken(new UserDetailsImpl(user));
         var authResponse = AuthenticationResponse.builder()
                 .accessToken(accessToken)
                 .build();

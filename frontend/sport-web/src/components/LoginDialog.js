@@ -34,11 +34,9 @@ function LoginDialog({ open, onClose }) {
 
     const handleLogin = () => {
 
-        const urlSignIn = `${constList.BASE_URL}/users/login`;
+        const urlSignIn = `${constList.BASE_URL}/api/auth/authenticate`;
         const user = {
-            fio: fio,
             email: email,
-            phone_number: phone,
             password: password,
         };
 
@@ -57,7 +55,7 @@ function LoginDialog({ open, onClose }) {
     };
 
     const handleRegister = () => {
-        const urlSignUp = `${constList.BASE_URL}/users`;
+        const urlSignUp = `${constList.BASE_URL}/api/auth/register`;
         const user = {
             fio: fio,
             email: email,
@@ -102,7 +100,7 @@ function LoginDialog({ open, onClose }) {
                 ? 'Введите свои данные для регистрации:'
                 : 'Введите имя или эл.почту и пароль:'}
             </DialogContentText>
-            <TextField
+            {isRegistering > 0 && (<TextField
             autoFocus
             margin="dense"
             label="ФИО"
@@ -116,6 +114,7 @@ function LoginDialog({ open, onClose }) {
                 },
             }}
             />
+            )}
             {errors.fio && <div className="red-text">{errors.fio}</div>}
             <TextField
             autoFocus
@@ -132,7 +131,7 @@ function LoginDialog({ open, onClose }) {
             }}
             />
             {errors.email && <div className="red-text">{errors.email}</div>}
-            <TextField
+            {isRegistering > 0 && (<TextField
             autoFocus
             margin="dense"
             label="Номер телефона"
@@ -146,6 +145,7 @@ function LoginDialog({ open, onClose }) {
                 },
             }}
             />
+            )}
             {errors.phone_number && <div className="red-text">{errors.phone_number}</div>}
             <TextField
             margin="dense"
