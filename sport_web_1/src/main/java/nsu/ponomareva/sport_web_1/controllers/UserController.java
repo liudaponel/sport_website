@@ -5,6 +5,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import nsu.ponomareva.sport_web_1.models.User;
 import nsu.ponomareva.sport_web_1.services.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,19 +20,9 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/users")
 public class UserController {
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
     @Autowired
     private UserService userService;
-
-//    @GetMapping(value = "/set-cookie")
-//    public ResponseEntity<?> setCookie(HttpServletResponse response) throws IOException {
-//        Cookie cookie = new Cookie("data", "Come_to_the_dark_side");//создаем объект Cookie,
-//        //в конструкторе указываем значения для name и value
-//        cookie.setPath("/");//устанавливаем путь
-//        cookie.setMaxAge(86400);//здесь устанавливается время жизни куки
-//        response.addCookie(cookie);//добавляем Cookie в запрос
-//        response.setContentType("text/plain");//устанавливаем контекст
-//        return ResponseEntity.ok().body(HttpStatus.OK);//получилось как бы два раза статус ответа установили, выбирайте какой вариант лучше
-//    }
 
     // Create a new user
     @CrossOrigin(origins = "http://localhost:3000")
@@ -54,9 +46,10 @@ public class UserController {
 //    }
 
     // Get all users
-    @CrossOrigin(origins = "http://localhost:3000")
+//    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping
     public List<User> getAllUsers() {
+        logger.info("getting");
         return userService.getAllUsers();
     }
 

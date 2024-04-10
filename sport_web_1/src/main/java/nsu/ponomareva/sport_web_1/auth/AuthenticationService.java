@@ -31,7 +31,7 @@ public class AuthenticationService {
   private final RoleRepository roleRepository;
   private static final Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
 
-  public String register(RegisterRequest request) {
+  public String register(User request) {
     var user = User.builder()
         .fio(request.getFio())
         .email(request.getEmail())

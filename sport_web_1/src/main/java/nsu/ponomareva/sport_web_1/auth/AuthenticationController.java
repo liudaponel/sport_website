@@ -10,9 +10,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import jakarta.validation.Valid;
+
 
 import java.io.IOException;
 import nsu.ponomareva.sport_web_1.exceptions.CustomException;
+import nsu.ponomareva.sport_web_1.models.User;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -25,9 +28,9 @@ public class AuthenticationController {
 
   @PostMapping("/register")
   public ResponseEntity<AuthenticationResponse> register(
-      @RequestBody RegisterRequest request
+          @RequestBody @Valid User user
   ) {
-    String jwtToken = service.register(request);
+    String jwtToken = service.register(user);
     if(jwtToken == null){
       throw new CustomException("Такой пользователь уже существует");
     }

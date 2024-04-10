@@ -21,7 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 public class User implements UserDetails {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column(nullable=false, columnDefinition = "text")
     private String fio;
