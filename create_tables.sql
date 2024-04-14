@@ -1,4 +1,4 @@
-CREATE TABLE sports_areas(
+CREATE TABLE places(
     id serial PRIMARY KEY ,
     name text NOT NULL ,
     address text NOT NULL ,
@@ -8,9 +8,9 @@ CREATE TABLE coaches(
     id serial PRIMARY KEY,
     user_id int REFERENCES users(id)
 );
-CREATE TABLE sporting_events(
+CREATE TABLE events(
     id serial PRIMARY KEY ,
-    sport_area int REFERENCES sports_areas(id),
+    place int REFERENCES places(id),
     start_time timestamp NOT NULL ,
     price float DEFAULT 0.0,
     duration_hours int NOT NULL,
@@ -33,6 +33,6 @@ CREATE TABLE users(
 );
 CREATE TABLE registrations(
     guest int REFERENCES users(id),
-    event int REFERENCES sporting_events(id),
+    event int REFERENCES events(id),
     PRIMARY KEY (guest, event)
 )
