@@ -17,7 +17,7 @@ import lombok.AllArgsConstructor;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     @Column(nullable=false, columnDefinition = "text")
     private String fio;
     @Column(nullable = false, columnDefinition = "text", unique=true)

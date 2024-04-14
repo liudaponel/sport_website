@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class Coach {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user_id;

@@ -17,10 +17,11 @@ import java.sql.Timestamp;
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     @Column(nullable=false, columnDefinition = "timestamp")
     private Timestamp start_time;
     private Integer taken_places;
+    private Integer max_places;
     @Column(nullable=false)
     private Integer duration_hours;
     @Column(nullable=false)

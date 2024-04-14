@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class Place {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     @Column(nullable=false, columnDefinition = "text")
     private String name;
     @Column(nullable = false, columnDefinition = "text")
