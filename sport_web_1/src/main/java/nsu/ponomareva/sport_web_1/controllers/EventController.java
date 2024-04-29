@@ -34,8 +34,8 @@ public class EventController {
 
     @PostMapping
     public ResponseEntity<Event> addEvent(@RequestBody Event event) {
-        Event newEvent = eventService.addEvent(event);
-        return new ResponseEntity<>(newEvent, HttpStatus.CREATED);
+        eventService.addEvent(event);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")

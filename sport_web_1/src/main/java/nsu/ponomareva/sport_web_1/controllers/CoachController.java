@@ -34,18 +34,14 @@ public class CoachController {
 
     @PostMapping
     public ResponseEntity<Coach> addCoach(@RequestBody Coach coach) {
-        Coach newCoach = coachService.addCoach(coach);
-        return new ResponseEntity<>(newCoach, HttpStatus.CREATED);
+        coachService.addCoach(coach);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Coach> updateCoach(@PathVariable Long id, @RequestBody Coach coach) {
-        Coach updatedCoach = coachService.updateCoach(id, coach);
-        if (updatedCoach != null) {
-            return new ResponseEntity<>(updatedCoach, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        coachService.updateCoach(coach, id);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")

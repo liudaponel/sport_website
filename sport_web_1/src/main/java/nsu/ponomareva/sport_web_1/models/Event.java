@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "events")
@@ -17,7 +19,7 @@ import java.sql.Timestamp;
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long event_id;
     @Column(nullable=false, columnDefinition = "timestamp")
     private Timestamp start_time;
     private Integer taken_places;
@@ -28,9 +30,12 @@ public class Event {
     private Integer duration_minutes;
     private Integer price = 0;
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "place_id")
     private Place place;
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "coach_id")
     private Coach coach;
+
+    @ManyToMany(mappedBy = "events")
+    private Set<User> users = new HashSet<>();
 }

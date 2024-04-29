@@ -1,5 +1,6 @@
 package nsu.ponomareva.sport_web_1.services;
 
+import nsu.ponomareva.sport_web_1.exceptions.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -18,7 +19,7 @@ public class PlaceService {
     }
 
     public Place getPlaceById(Long id) {
-        return placeRepository.findById(id).orElse(null);
+        return placeRepository.findById(id).orElseThrow(()->new CustomException("Такого места не найдено"));
     }
 
     public Place addPlace(Place place) {
@@ -28,11 +29,9 @@ public class PlaceService {
     public Place updatePlace(Long id, Place newPlaceData) {
         Place placeToUpdate = placeRepository.findById(id).orElse(null);
         if (placeToUpdate != null) {
-            // Установка новых данных
             placeToUpdate.setName(newPlaceData.getName());
             placeToUpdate.setAddress(newPlaceData.getAddress());
             placeToUpdate.setMax_places(newPlaceData.getMax_places());
-            // Сохранение обновленного объекта
             return placeRepository.save(placeToUpdate);
         } else {
             return null;

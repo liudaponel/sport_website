@@ -7,6 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
+import java.util.HashSet;
+import java.util.Set;
+
 
 @Entity
 @Table(name = "users")
@@ -17,7 +20,7 @@ import lombok.AllArgsConstructor;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long user_id;
     @Column(nullable=false, columnDefinition = "text")
     private String fio;
     @Column(nullable = false, columnDefinition = "text", unique=true)
@@ -33,4 +36,10 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
+
+    @ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(name = "users_events",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "event_id"))
+    private Set<Event> events = new HashSet<>();
 }

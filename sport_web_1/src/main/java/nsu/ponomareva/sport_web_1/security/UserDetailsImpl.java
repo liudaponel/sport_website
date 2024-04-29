@@ -18,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDetailsImpl implements UserDetails {
-    private Integer id;
+    private Long user_id;
     private String fio;
     private String email;
     private String phone_number;
@@ -26,7 +26,7 @@ public class UserDetailsImpl implements UserDetails {
     private Role role;
 
     public UserDetailsImpl(User user){
-        id = user.getId();
+        user_id = user.getUser_id();
         fio = user.getFio();
         email = user.getEmail();
         phone_number = user.getPhone_number();

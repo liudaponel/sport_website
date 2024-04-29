@@ -14,9 +14,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Coach {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long user_id;
     @OneToOne
+    @MapsId
     @JoinColumn(name = "user_id")
-    private User user_id;
+    private User user;
+
+    private Integer salary;
 }
