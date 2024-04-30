@@ -1,5 +1,8 @@
 package nsu.ponomareva.sport_web_1.controllers;
 
+import nsu.ponomareva.sport_web_1.services.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,10 +14,12 @@ import nsu.ponomareva.sport_web_1.services.EventService;
 
 @RestController
 @RequestMapping("/api/events")
+@CrossOrigin(origins = "${url_frontend}")
 public class EventController {
 
     @Autowired
     private EventService eventService;
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @GetMapping
     public ResponseEntity<List<Event>> getAllEvents() {
@@ -33,14 +38,14 @@ public class EventController {
     }
 
     @PostMapping
-    public ResponseEntity<Event> addEvent(@RequestBody Event event) {
-        eventService.addEvent(event);
+    public ResponseEntity<Event> addEvent(@RequestBody EventRequest request) {
+        eventService.addEvent(request);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Event> updateEvent(@PathVariable Long id, @RequestBody Event event) {
-        Event updatedEvent = eventService.updateEvent(id, event);
+    public ResponseEntity<Event> updateEvent(@PathVariable Long id, @RequestBody EventRequest request) {
+        Event updatedEvent = eventService.updateEvent(id, request);
         if (updatedEvent != null) {
             return new ResponseEntity<>(updatedEvent, HttpStatus.OK);
         } else {

@@ -20,6 +20,8 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long event_id;
+    @Column(columnDefinition = "text")
+    private String name;
     @Column(nullable=false, columnDefinition = "timestamp")
     private Timestamp start_time;
     private Integer taken_places;

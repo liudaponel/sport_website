@@ -70,6 +70,11 @@ public class UserService {
         return null;
     }
 
+    public void makeAdmin(Long id){
+        User user = userRepository.findById(id).orElseThrow();
+        user.setRole(roleRepository.findByName("Администратор"));
+        userRepository.save(user);
+    }
     // Delete all users
     public void deleteAllUsers() {
         userRepository.deleteAll();

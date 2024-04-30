@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/coaches")
+@CrossOrigin(origins = "${url_frontend}")
 public class CoachController {
 
     @Autowired

@@ -11,6 +11,7 @@ import nsu.ponomareva.sport_web_1.services.PlaceService;
 
 @RestController
 @RequestMapping("/api/places")
+@CrossOrigin(origins = "${url_frontend}")
 public class PlaceController {
 
     @Autowired

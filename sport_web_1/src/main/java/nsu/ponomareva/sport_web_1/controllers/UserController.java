@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/users")
-@CrossOrigin(origins = "http://localhost:3000")
+@RequestMapping("/api/users")
+@CrossOrigin(origins = "${url_frontend}")
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
     @Autowired
@@ -46,6 +46,11 @@ public class UserController {
     @PutMapping("/{id}")
     public User updateUser(@PathVariable Long id, @RequestBody User userDetails) {
         return userService.updateUser(id, userDetails);
+    }
+
+    @PostMapping("/{id}")
+    public void makeAdmin(@PathVariable Long id){
+        userService.makeAdmin(id);
     }
 
     // Delete all users
