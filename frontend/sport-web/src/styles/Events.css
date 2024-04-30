@@ -24,3 +24,15 @@
 .header {
     text-align: center;
 }
+
+.delete_button {
+    display: flex;
+    justify-content: space-between; /* Распределяет элементы между собой */
+    align-items: center; /* Выравнивает элементы по вертикали */
+}
+
+.event-name {
+    overflow: hidden; /* Обрезать текст, выходящий за пределы контейнера */
+    text-overflow: ellipsis; /* Отображать многоточие для обрезанного текста */
+    white-space: nowrap; /* Предотвратить перенос текста на новую строку */
+}
