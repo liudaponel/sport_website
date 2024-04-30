@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Table(name = "places")
 @Data
@@ -22,4 +24,7 @@ public class Place {
     private String address;
     @Column(nullable = false)
     private Integer max_places;
+
+    @OneToMany(mappedBy = "place", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Event> events;
 }

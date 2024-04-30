@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Table(name = "coaches")
 @Data
@@ -15,10 +17,12 @@ import lombok.NoArgsConstructor;
 public class Coach {
     @Id
     private Long user_id;
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @MapsId
     @JoinColumn(name = "user_id")
     private User user;
-
     private Integer salary;
+
+    @OneToMany(mappedBy = "coach", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Event> events;
 }

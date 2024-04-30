@@ -43,10 +43,8 @@ const EventDetails = () => {
             });
             setEvent(response.data);
             setFormData(response.data); // Заполняем форму начальными данными о мероприятии
-
-            if(isAdmin){
-                setForAdmin();
-            }
+            setSelectedPlaceId(response.data.place.place_id);
+            setSelectedCoachId(response.data.coach.user.user_id);
         } catch (error) {
             console.error('Ошибка при получении информации о мероприятии:', error);
         }
@@ -55,46 +53,42 @@ const EventDetails = () => {
         fetchEvent();
     }, [id]);
 
-    const setForAdmin = async () => {
-        const token = localStorage.getItem('token');
-        const url = `${constList.BASE_URL}/api/places`;
-        const response = await axios.get(url, {
-            headers: {
-            Authorization: `Bearer ${token}` // Добавляем токен в заголовок Authorization
-            }
-        });
-        setPlaces(response.data);
-        setSelectedPlaceId(event.place.place_id);
-
-        const url2 = `${constList.BASE_URL}/api/coaches`;
-        const response2 = await axios.get(url2, {
-            headers: {
-            Authorization: `Bearer ${token}` // Добавляем токен в заголовок Authorization
-            }
-        });
-        setCoaches(response2.data);
-        setSelectedCoachId(event.coach.user_id);
-    }
+    useEffect(() => {
+        const userRole = localStorage.getItem('role');
+        setIsAdmin(userRole === 'Администратор');
+        console.log(isAdmin);
+        if (isAdmin) {
+            const fetchAdminData = async () => {
+                try {
+                    const token = localStorage.getItem('token');
+                    const placesResponse = await axios.get(`${constList.BASE_URL}/api/places`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    });
+                    setPlaces(placesResponse.data);
+    
+                    const coachesResponse = await axios.get(`${constList.BASE_URL}/api/coaches`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    });
+                    setCoaches(coachesResponse.data);
+                } catch (error) {
+                    console.error('Ошибка при получении данных для администратора:', error);
+                }
+            };
+            fetchAdminData();
+        }
+    }, [isAdmin]);
 
     const handleChange = e => {
         const { name, value } = e.target;
-    
-        // Если изменяется значение coach.user_id
-        if (name === 'coach.user_id') {
-            setFormData(prevFormData => ({
-                ...prevFormData,
-                coach: {
-                ...prevFormData.coach,
-                user_id: value
-                }
-            }));
-        } else {
-        // Если изменяется другое значение в форме
-            setFormData(prevFormData => ({
-                ...prevFormData,
-                [name]: value
-            }));
-        }
+
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            [name]: value
+        }));
     };
 
     const handleSelectChange = (e) => {
@@ -114,8 +108,8 @@ const EventDetails = () => {
             duration_hours: formData.duration_hours,
             duration_minutes: formData.duration_minutes,
             price: formData.price,
-            place: formData.place.place_id,
-            coach: formData.coach.user_id
+            place: selectedPlaceId,
+            coach: selectedCoachId
         }
         e.preventDefault();
         const token = localStorage.getItem('token');
@@ -238,10 +232,12 @@ const EventDetails = () => {
                     label="Тренер"
                     fullWidth={true}
                     variant="outlined"
-                    value={selectedCoachId} onChange={handleSelectCoachChange}>
+                    value={selectedCoachId} 
+                    onChange={handleSelectCoachChange}>
+                    
                     {coaches.map(coach => (
                         <MenuItem key={coach.user_id} value={coach.user_id}>
-                            {coach.user?.fio || 'Нет информации о тренере'}
+                            {coach.user?.fio || ''}
                         </MenuItem>
                     ))}
                 </Select>

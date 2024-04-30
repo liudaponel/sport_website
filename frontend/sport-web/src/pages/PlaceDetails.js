@@ -25,7 +25,7 @@ const PlaceDetails = () => {
                 }
             });
             setPlace(response.data);
-            setFormData(response.data);
+            setFormData(response.data); // Заполняем форму начальными данными о мероприятии
         } catch (error) {
             console.error('Ошибка при получении информации о мероприятии:', error);
         }
@@ -43,11 +43,16 @@ const PlaceDetails = () => {
     };
 
     const handleSubmit = async e => {
-        e.prplaceDefault();
+        const place = {
+            name: formData.name,
+            address: formData.address,
+            max_places: formData.max_places
+        }
+        e.preventDefault();
         const token = localStorage.getItem('token');
         const url = `${constList.BASE_URL}/api/places/${id}`;
         try {
-        const response = await axios.put(url, formData, {
+        const response = await axios.put(url, place, {
             headers: {
             Authorization: `Bearer ${token}`
             }
@@ -65,7 +70,7 @@ const PlaceDetails = () => {
                 margin="normal"
                 label="Название"
                 name="name"
-                value={formData?.name || ''}
+                value={formData.name}
                 onChange={handleChange}
             />
             <TextField
@@ -73,16 +78,16 @@ const PlaceDetails = () => {
                 margin="normal"
                 label="Адрес"
                 name="address"
-                value={formData?.address || ''}
+                value={formData.address}
                 onChange={handleChange}
             />
             <TextField
                 fullWidth
                 margin="normal"
-                label="Максимальное кол-во мест"
+                label="Максимальное количество мест"
                 name="max_places"
-                type="number"
-                value={formData?.max_places || 0}
+                type='number'
+                value={formData.max_places}
                 onChange={handleChange}
             />
             <Button type="submit" variant="contained" color="primary">Принять изменения</Button>
@@ -92,3 +97,4 @@ const PlaceDetails = () => {
 };
 
 export default PlaceDetails;
+
