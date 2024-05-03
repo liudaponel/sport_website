@@ -28,7 +28,7 @@ const Places = () => {
                 setPlaces(response.data);
                 console.log(response.data);
             } catch (error) {
-                console.error('Ошибка при получении мероприятий:', error);
+                console.error('Ошибка при получении списка мест:', error);
             }
         };
         fetchPlaces();
@@ -51,7 +51,7 @@ const Places = () => {
             const updatedPlaces = places.filter(place => place.place_id !== placeId);
             setPlaces(updatedPlaces);
         } catch (error) {
-            console.error('Ошибка при удалении мероприятия:', error);
+            console.error('Ошибка при удалении места:', error);
         }
     };
     

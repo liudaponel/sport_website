@@ -22,7 +22,7 @@ public class UserController {
 
     // Create a new user
     @PostMapping
-    public User createUser(@RequestBody @Valid User user) {
+    public User createUser(@RequestBody ChangeUserRequest user) {
         User createdUser = userService.createUser(user);
         if(createdUser == null){
             throw new CustomException("Пользователь с такими данными уже существует");
@@ -44,7 +44,7 @@ public class UserController {
 
     // Update user by ID
     @PutMapping("/{id}")
-    public User updateUser(@PathVariable Long id, @RequestBody User userDetails) {
+    public User updateUser(@PathVariable Long id, @RequestBody ChangeUserRequest userDetails) {
         return userService.updateUser(id, userDetails);
     }
 

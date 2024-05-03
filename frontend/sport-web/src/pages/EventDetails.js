@@ -124,6 +124,10 @@ const EventDetails = () => {
         }
     };
 
+    const clickRegister = async e => {
+        
+    }
+
     return (
         <Container maxWidth="sm">
         <Typography variant="h4" gutterBottom>Мероприятие</Typography>
@@ -269,7 +273,9 @@ const EventDetails = () => {
                 }}
             />
             {localStorage.getItem('role') === 'Администратор' && (
-            <Button type="submit" variant="contained" color="primary">Принять изменения</Button>)}
+            <Button type="submit" variant="contained" color="warning">Принять изменения</Button>)}
+            {localStorage.getItem('role') === 'Пользователь' && (
+            <Button variant="contained" color="warning" onClick={clickRegister}>Записаться</Button>)}
         </form>
         </Container>
     );

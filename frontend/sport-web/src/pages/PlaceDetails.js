@@ -90,7 +90,7 @@ const PlaceDetails = () => {
                 value={formData.max_places}
                 onChange={handleChange}
             />
-            <Button type="submit" variant="contained" color="primary">Принять изменения</Button>
+            <Button type="submit" variant="contained" color="warning">Принять изменения</Button>
         </form>
         </Container>
     );

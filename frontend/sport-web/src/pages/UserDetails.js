@@ -6,6 +6,9 @@ import { TextField, Button, Container, Typography, Select, InputLabel, MenuItem 
 import * as constList from '../addition/Constants.js';
 
 const UserDetails = () => {
+    const [roles, setRoles] = useState([]);
+    const [selectedRoleId, setSelectedRoleId] = useState('');
+
     const { id } = useParams(); // Получаем параметр id из URL
     const [user, setUser] = useState(null); // Состояние для хранения данных о мероприятии
     const [formData, setFormData] = useState({
@@ -29,6 +32,7 @@ const UserDetails = () => {
             });
             setUser(response.data);
             setFormData(response.data); // Заполняем форму начальными данными
+            setSelectedRoleId(response.data.role.role_id);
             
             console.log(response.data);
         } catch (error) {
@@ -39,6 +43,23 @@ const UserDetails = () => {
         fetchUser();
     }, [id]);
 
+    useEffect(() => {
+        const fetchRoles = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await axios.get(`${constList.BASE_URL}/api/roles`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                setRoles(response.data);
+            } catch (error) {
+                console.error('Ошибка при получении списка ролей:', error);
+            }
+        };
+        fetchRoles();
+    }, []);
+
     const handleChange = e => {
         const { name, value } = e.target;
         setFormData(prevFormData => ({
@@ -47,13 +68,17 @@ const UserDetails = () => {
         }));
     };
 
+    const handleSelectChange = (e) => {
+        setSelectedRoleId(e.target.value);
+    };
+
     const handleSubmit = async e => {
         const user = {
             fio: formData.fio,
             email: formData.email,
             phone_number: formData.phone_number,
             password: formData.password,
-            role: formData.role.role_id
+            role: selectedRoleId
         }
         e.preventDefault();
         const token = localStorage.getItem('token');
@@ -67,6 +92,23 @@ const UserDetails = () => {
         } catch (error) {
         }
     };
+
+    const makeCoach = async e => {
+        const coach = {
+            user_id: id
+        }
+        e.preventDefault();
+        const token = localStorage.getItem('token');
+        const url = `${constList.BASE_URL}/api/coaches/${id}`;
+        try {
+        const response = await axios.put(url, coach, {
+            headers: {
+            Authorization: `Bearer ${token}`
+            }
+        });
+        } catch (error) {
+        }
+    }
 
     return (
         <Container maxWidth="sm">
@@ -96,23 +138,25 @@ const UserDetails = () => {
                 value={formData.phone_number}
                 onChange={handleChange}
             />
-            <TextField
-                fullWidth
-                margin="normal"
-                label="Пароль"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-            />
-            <TextField
-                fullWidth
-                margin="normal"
-                label="Роль"
-                name="role"
-                value={formData.role?.name || ''}
-                onChange={handleChange}
-            />
-            <Button type="submit" variant="contained" color="primary">Принять изменения</Button>
+            <InputLabel id="select-label">Роль</InputLabel>
+                <Select 
+                    labelId="select-label"
+                    label="Роль"
+                    fullWidth={true}
+                    variant="outlined"
+                    value={selectedRoleId} 
+                    onChange={handleSelectChange}>
+                    
+                    {roles.map(role => (
+                        <MenuItem key={role.role_id} value={role.role_id}>
+                            {role.name}
+                        </MenuItem>
+                    ))}
+                </Select>
+            <div style={{ margin: '10px'}}>
+            <Button type="submit" variant="contained" color="warning">Принять изменения</Button>
+            <Button variant="contained" color="warning" style={{ marginLeft: '10px' }} onClick={makeCoach}>Сделать Тренером</Button>
+            </div>
         </form>
         </Container>
     );

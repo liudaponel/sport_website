@@ -17,12 +17,9 @@ import java.util.List;
 public class Coach {
     @Id
     private Long user_id;
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @MapsId
     @JoinColumn(name = "user_id")
     private User user;
     private Integer salary;
-
-    @OneToMany(mappedBy = "coach", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Event> events;
 }

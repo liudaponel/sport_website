@@ -29,7 +29,7 @@ const CreatePlace = ({onClose}) => {
 
             onClose();
         } catch (error) {
-            console.error('Ошибка при создании мероприятия:', error);
+            console.error('Ошибка при создании нового места:', error);
         }
     };
 
@@ -68,7 +68,7 @@ const CreatePlace = ({onClose}) => {
                     onChange={handleChange}
                 />
                 
-                <Button type="submit" variant="contained" color="primary">Добавить</Button>
+                <Button type="submit" variant="contained" color="warning">Добавить</Button>
             </form>
             </Container>
         </div>

@@ -24,7 +24,4 @@ public class Place {
     private String address;
     @Column(nullable = false)
     private Integer max_places;
-
-    @OneToMany(mappedBy = "place", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Event> events;
 }

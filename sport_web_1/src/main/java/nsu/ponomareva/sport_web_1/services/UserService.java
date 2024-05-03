@@ -1,6 +1,8 @@
 package nsu.ponomareva.sport_web_1.services;
 
 import nsu.ponomareva.sport_web_1.auth.AuthenticationService;
+import nsu.ponomareva.sport_web_1.controllers.ChangeUserRequest;
+import nsu.ponomareva.sport_web_1.exceptions.CustomException;
 import nsu.ponomareva.sport_web_1.models.Role;
 import nsu.ponomareva.sport_web_1.models.User;
 import nsu.ponomareva.sport_web_1.repository.RoleRepository;
@@ -26,16 +28,19 @@ public class UserService {
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     // Create a new user
-    public User createUser(User user) {
+    public User createUser(ChangeUserRequest user) {
         var userFromDB = userRepository.findByEmail(user.getEmail());
-        if (userFromDB.isEmpty()) {
-            return null;
+        if (userFromDB.isPresent()) {
+            throw new CustomException("Пользователь с такой почтой уже существует");
         }
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        Role role = roleRepository.findByName("Пользователь");
-        user.setRole(role);
-        return userRepository.save(user);
+        User newUser = new User();
+        newUser.setFio(user.getFio());
+        newUser.setEmail(user.getEmail());
+        newUser.setPhone_number(user.getPhone_number());
+        newUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        newUser.setRole(roleRepository.findById(user.getRole()).orElseThrow());
+        return userRepository.save(newUser);
     }
 
     public boolean isPasswordCorrect(String email, String password) {
@@ -48,7 +53,8 @@ public class UserService {
 
     // Get all users
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        List<User> users = userRepository.findAll();
+        return users;
     }
 
     // Get user by ID
@@ -57,7 +63,7 @@ public class UserService {
     }
 
     // Update user
-    public User updateUser(Long id, User userDetails) {
+    public User updateUser(Long id, ChangeUserRequest userDetails) {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
             User existingUser = user.get();
@@ -65,6 +71,7 @@ public class UserService {
             existingUser.setEmail(userDetails.getEmail());
             existingUser.setPhone_number(userDetails.getPhone_number());
             existingUser.setPassword(userDetails.getPassword());
+            existingUser.setRole(roleRepository.findById(userDetails.getRole()).orElseThrow());
             return userRepository.save(existingUser);
         }
         return null;
@@ -75,6 +82,7 @@ public class UserService {
         user.setRole(roleRepository.findByName("Администратор"));
         userRepository.save(user);
     }
+
     // Delete all users
     public void deleteAllUsers() {
         userRepository.deleteAll();

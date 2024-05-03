@@ -16,6 +16,7 @@ import Registrations from '../pages/Registrations';
 import EventDetails from '../pages/EventDetails';
 import LoginDialog from '../components/LoginDialog';
 import PlaceDetails from '../pages/PlaceDetails';
+import UserDetails from '../pages/UserDetails';
 
 
 // Главный компонент приложения
@@ -27,13 +28,13 @@ function Navbar() {
                 <Link to="/events" style={{ textDecoration: 'none' }}>
                     <IconButton>Мероприятия <CalendarMonthIcon className='my-button'/></IconButton>
                 </Link>
-                {localStorage.getItem('role') == 'Администратор' && (<Link to="/users" style={{ textDecoration: 'none' }}>
-                    <IconButton>Посетители  <GroupsIcon className='my-button'/> </IconButton>
+                {localStorage.getItem('role') === 'Администратор' && (<Link to="/users" style={{ textDecoration: 'none' }}>
+                    <IconButton>Пользователи <GroupsIcon className='my-button'/> </IconButton>
                 </Link>)}
-                {localStorage.getItem('role') == 'Администратор' && (<Link to="/places" style={{ textDecoration: 'none' }}>
+                {localStorage.getItem('role') === 'Администратор' && (<Link to="/places" style={{ textDecoration: 'none' }}>
                     <IconButton>Площадки <DomainIcon className='my-button'/> </IconButton>
                 </Link>)}
-                {localStorage.getItem('role') == 'Администратор' && (<Link to="/registrations" style={{ textDecoration: 'none' }}>
+                {localStorage.getItem('role') === 'Администратор' && (<Link to="/registrations" style={{ textDecoration: 'none' }}>
                     <IconButton>Подтвердить <AccessAlarmIcon className='my-button'/> </IconButton>
                 </Link>)}
                 <IconButton onClick={() => setLoginOpen(true)}>
@@ -47,6 +48,7 @@ function Navbar() {
                     <Route path="/events" exact={true} element={<Events />} />
                     <Route path="/events/:id" element={<EventDetails />} />
                     <Route path="/users" exact={true} element={<Users />} />
+                    <Route path="/users/:id" element={<UserDetails />} />
                     <Route path="/places" exact={true} element={<Places />} />
                     <Route path="/places/:id" element={<PlaceDetails />} />
                     <Route path="/registrations" exact={true} element={<Registrations />} />

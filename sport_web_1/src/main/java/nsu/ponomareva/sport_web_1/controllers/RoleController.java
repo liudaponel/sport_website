@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/roles")
+@RequestMapping("/api/roles")
 @CrossOrigin(origins = "${url_frontend}")
 public class RoleController {
     @Autowired

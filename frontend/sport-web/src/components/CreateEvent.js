@@ -23,26 +23,31 @@ const CreateEvent = ({onClose}) => {
 
     useEffect(() => {
         const fetchPlaces = async () => {
-          try {
-            const token = localStorage.getItem('token');
-            const url = `${constList.BASE_URL}/api/places`;
-            const response = await axios.get(url, {
-                headers: {
-                Authorization: `Bearer ${token}` // Добавляем токен в заголовок Authorization
-                }
-            });
-            setPlaces(response.data);
-
-            const url2 = `${constList.BASE_URL}/api/coaches`;
-            const response2 = await axios.get(url2, {
-                headers: {
-                Authorization: `Bearer ${token}` // Добавляем токен в заголовок Authorization
-                }
-            });
-            setCoaches(response2.data);
-          } catch (error) {
-            console.error('Ошибка при получении списка мест:', error);
-          }
+            try {
+                const token = localStorage.getItem('token');
+                const url = `${constList.BASE_URL}/api/places`;
+                const response = await axios.get(url, {
+                    headers: {
+                    Authorization: `Bearer ${token}` // Добавляем токен в заголовок Authorization
+                    }
+                });
+                setPlaces(response.data);
+            } catch (error) {
+                console.error('Ошибка при получении списка мест:', error);
+            }
+            try{
+                const token = localStorage.getItem('token');
+                const url2 = `${constList.BASE_URL}/api/coaches`;
+                const response2 = await axios.get(url2, {
+                    headers: {
+                    Authorization: `Bearer ${token}` // Добавляем токен в заголовок Authorization
+                    }
+                });
+                setCoaches(response2.data);
+            }
+            catch (error) {
+                console.error('Ошибка при получении списка тренеров:', error);
+            }
         };
     
         fetchPlaces();
@@ -184,7 +189,7 @@ const CreateEvent = ({onClose}) => {
                     value={formData.max_places}
                     onChange={handleChange}
                 />
-                <Button type="submit" variant="contained" color="primary">Добавить</Button>
+                <Button type="submit" variant="contained" color="warning">Добавить</Button>
             </form>
             </Container>
         </div>

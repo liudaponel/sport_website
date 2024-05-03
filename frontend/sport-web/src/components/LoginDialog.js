@@ -74,7 +74,6 @@ function LoginDialog({ open, onClose }) {
         })
         .catch(error => {
             console.error('Error:', error);
-            console.log(error.response.data);
             if (error.response.data.message) {
                 alert(error.response.data.message);
             }
