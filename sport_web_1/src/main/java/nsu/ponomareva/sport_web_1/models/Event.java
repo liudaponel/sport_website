@@ -30,6 +30,7 @@ public class Event {
     private Integer duration_hours;
     @Column(nullable=false)
     private Integer duration_minutes;
+    @Builder.Default
     private Integer price = 0;
     @ManyToOne
     @JoinColumn(name = "place_id")
@@ -38,6 +39,9 @@ public class Event {
     @JoinColumn(name = "coach_id")
     private Coach coach;
 
-    @ManyToMany(mappedBy = "events")
-    private Set<User> users = new HashSet<>();
+//    @ManyToMany(mappedBy = "events")
+//    private Set<User> users = new HashSet<>();
+
+    @OneToMany(mappedBy = "event_id")
+    Set<UserEvent> registrations;
 }

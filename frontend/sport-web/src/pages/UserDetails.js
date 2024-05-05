@@ -4,6 +4,7 @@ import axios from 'axios';
 import { TextField, Button, Container, Typography, Select, InputLabel, MenuItem } from '@mui/material';
 
 import * as constList from '../addition/Constants.js';
+import UserEventsList from '../components/UserEventsList';
 
 const UserDetails = () => {
     const [roles, setRoles] = useState([]);
@@ -19,6 +20,8 @@ const UserDetails = () => {
         role: '',
         events: ''
     });
+
+    const [events, setEvents] = useState([]);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -39,8 +42,24 @@ const UserDetails = () => {
             console.error('Ошибка при получении информации о пользователе:', error);
         }
         };
-
         fetchUser();
+
+        const fetchEvents = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const url = `${constList.BASE_URL}/api/registrations/user/${id}`;
+                const response2 = await axios.get(url, {
+                    headers: {
+                        Authorization: `Bearer ${token}` // Добавляем токен в заголовок Authorization
+                    }
+                });
+                setEvents(response2.data);
+                console.log(response2.data);
+            } catch (error) {
+                console.error('Ошибка при получении информации о пользователе:', error);
+            }
+            };
+        fetchEvents();
     }, [id]);
 
     useEffect(() => {
@@ -158,6 +177,7 @@ const UserDetails = () => {
             <Button variant="contained" color="warning" style={{ marginLeft: '10px' }} onClick={makeCoach}>Сделать Тренером</Button>
             </div>
         </form>
+        <UserEventsList events={events} />
         </Container>
     );
 };

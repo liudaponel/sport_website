@@ -3,8 +3,11 @@ package nsu.ponomareva.sport_web_1.services;
 import nsu.ponomareva.sport_web_1.auth.AuthenticationService;
 import nsu.ponomareva.sport_web_1.controllers.ChangeUserRequest;
 import nsu.ponomareva.sport_web_1.exceptions.CustomException;
+import nsu.ponomareva.sport_web_1.models.Event;
 import nsu.ponomareva.sport_web_1.models.Role;
 import nsu.ponomareva.sport_web_1.models.User;
+import nsu.ponomareva.sport_web_1.models.UserEvent;
+import nsu.ponomareva.sport_web_1.repository.EventRepository;
 import nsu.ponomareva.sport_web_1.repository.RoleRepository;
 import nsu.ponomareva.sport_web_1.repository.UserRepository;
 import org.slf4j.Logger;
@@ -13,9 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -23,6 +24,8 @@ public class UserService {
     private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private EventRepository eventRepository;
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
@@ -91,6 +94,25 @@ public class UserService {
     // Delete user
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
+    }
+
+//    public void register_on_event(Long event_id, User user){
+//        String email = user.getEmail();
+//        User user_my = userRepository.findByEmail(email).orElseThrow();
+//        Event event = eventRepository.findById(event_id).orElseThrow();
+//
+//        user_my.getEvents().add(event);
+//        userRepository.save(user_my);
+//    }
+
+    public List<Event> getEvents(Long id){
+        User user = userRepository.findById(id).orElseThrow();
+        Set<UserEvent> ue = user.getRegistrations();
+        List<Event> events = new ArrayList<>();
+        for (UserEvent reg: ue) {
+            events.add(reg.getEvent_id());
+        }
+        return events;
     }
 
 }

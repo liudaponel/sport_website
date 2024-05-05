@@ -37,9 +37,6 @@ public class User {
     @JoinColumn(name = "role_id")
     private Role role;
 
-    @ManyToMany(cascade = { CascadeType.ALL })
-    @JoinTable(name = "users_events",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "event_id"))
-    private Set<Event> events = new HashSet<>();
+    @OneToMany(mappedBy = "user_id")
+    Set<UserEvent> registrations;
 }

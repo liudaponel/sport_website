@@ -1,0 +1,38 @@
+.registration-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  
+.regi-card {
+    width: 30%;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.registration-card h2 {
+    margin-top: 0;
+}
+
+.registration-card p {
+    margin: 5px 0;
+}
+  
+.header {
+    text-align: center;
+}
+
+.delete_button {
+    display: flex;
+    justify-content: space-between; /* Распределяет элементы между собой */
+    align-items: center; /* Выравнивает элементы по вертикали */
+}
+
+.registration-name {
+    overflow: hidden; /* Обрезать текст, выходящий за пределы контейнера */
+    text-overflow: ellipsis; /* Отображать многоточие для обрезанного текста */
+    white-space: nowrap; /* Предотвратить перенос текста на новую строку */
+}

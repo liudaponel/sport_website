@@ -1,6 +1,7 @@
 package nsu.ponomareva.sport_web_1.controllers;
 
 import jakarta.validation.Valid;
+import nsu.ponomareva.sport_web_1.models.Event;
 import nsu.ponomareva.sport_web_1.models.User;
 import nsu.ponomareva.sport_web_1.services.UserService;
 import org.slf4j.Logger;
@@ -48,7 +49,7 @@ public class UserController {
         return userService.updateUser(id, userDetails);
     }
 
-    @PostMapping("/{id}")
+    @PostMapping("/make_admin/{id}")
     public void makeAdmin(@PathVariable Long id){
         userService.makeAdmin(id);
     }
@@ -64,5 +65,15 @@ public class UserController {
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
+    }
+
+//    @PostMapping("/register_on_event/{event_id}")
+//    public void register_on_event(@PathVariable Long event_id, @RequestBody User email){
+//        userService.register_on_event(event_id, email);
+//    }
+
+    @GetMapping("/{user_id}/events")
+    public List<Event> getEvents(@PathVariable Long user_id){
+        return userService.getEvents(user_id);
     }
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
-import { TextField, Button, Container, Typography, Select, InputLabel, MenuItem } from '@mui/material';
+import { TextField, Button, Container, Typography, Select, InputLabel, MenuItem, emphasize } from '@mui/material';
 
 import * as constList from '../addition/Constants.js';
 
@@ -125,7 +125,20 @@ const EventDetails = () => {
     };
 
     const clickRegister = async e => {
-        
+        e.preventDefault();
+        const token = localStorage.getItem('token');
+        const request = {
+            event: id,
+            userEmail: localStorage.getItem('email')
+        }
+        const url = `${constList.BASE_URL}/api/registrations/byEmail`;
+        const response = await axios.post(url, request, {
+            headers: {
+            Authorization: `Bearer ${token}`
+            }
+        }).then(response => {
+            alert("Вы успешно зарегистрированы!");
+        });
     }
 
     return (
