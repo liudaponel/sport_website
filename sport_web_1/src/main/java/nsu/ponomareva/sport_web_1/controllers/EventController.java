@@ -1,5 +1,6 @@
 package nsu.ponomareva.sport_web_1.controllers;
 
+import nsu.ponomareva.sport_web_1.DTO.EventDTO;
 import nsu.ponomareva.sport_web_1.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,13 +39,13 @@ public class EventController {
     }
 
     @PostMapping
-    public ResponseEntity<Event> addEvent(@RequestBody EventRequest request) {
+    public ResponseEntity<Event> addEvent(@RequestBody EventDTO request) {
         eventService.addEvent(request);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Event> updateEvent(@PathVariable Long id, @RequestBody EventRequest request) {
+    public ResponseEntity<Event> updateEvent(@PathVariable Long id, @RequestBody EventDTO request) {
         Event updatedEvent = eventService.updateEvent(id, request);
         if (updatedEvent != null) {
             return new ResponseEntity<>(updatedEvent, HttpStatus.OK);
@@ -57,5 +58,11 @@ public class EventController {
     public ResponseEntity<Void> deleteEvent(@PathVariable Long id) {
         eventService.deleteEvent(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/filters")
+    ResponseEntity<List<Event>> getWithFilters(@RequestBody EventDTO request){
+        List<Event> events = eventService.getWithFilters(request);
+        return new ResponseEntity<>(events, HttpStatus.OK);
     }
 }

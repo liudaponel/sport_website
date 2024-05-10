@@ -1,18 +1,20 @@
 package nsu.ponomareva.sport_web_1.services;
 
-import nsu.ponomareva.sport_web_1.auth.AuthenticationService;
-import nsu.ponomareva.sport_web_1.controllers.ChangeUserRequest;
+import nsu.ponomareva.sport_web_1.DTO.EventDTO;
+import nsu.ponomareva.sport_web_1.DTO.UserDTO;
 import nsu.ponomareva.sport_web_1.exceptions.CustomException;
 import nsu.ponomareva.sport_web_1.models.Event;
-import nsu.ponomareva.sport_web_1.models.Role;
 import nsu.ponomareva.sport_web_1.models.User;
 import nsu.ponomareva.sport_web_1.models.UserEvent;
 import nsu.ponomareva.sport_web_1.repository.EventRepository;
 import nsu.ponomareva.sport_web_1.repository.RoleRepository;
 import nsu.ponomareva.sport_web_1.repository.UserRepository;
+import nsu.ponomareva.sport_web_1.specifications.EventSpecification;
+import nsu.ponomareva.sport_web_1.specifications.UserSpecification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -31,7 +33,7 @@ public class UserService {
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     // Create a new user
-    public User createUser(ChangeUserRequest user) {
+    public User createUser(UserDTO user) {
         var userFromDB = userRepository.findByEmail(user.getEmail());
         if (userFromDB.isPresent()) {
             throw new CustomException("Пользователь с такой почтой уже существует");
@@ -66,7 +68,7 @@ public class UserService {
     }
 
     // Update user
-    public User updateUser(Long id, ChangeUserRequest userDetails) {
+    public User updateUser(Long id, UserDTO userDetails) {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
             User existingUser = user.get();
@@ -115,4 +117,22 @@ public class UserService {
         return events;
     }
 
+    public List<User> getWithFilters(UserDTO request) {
+        Specification<User> spec = Specification.where(null);
+
+        if (request.getFio() != null) {
+            spec = spec.and(UserSpecification.hasFioLike(request.getFio()));
+        }
+        if (request.getEmail() != null) {
+            spec = spec.and(UserSpecification.hasEmailLike(request.getEmail()));
+        }
+        if (request.getPhone_number() != null) {
+            spec = spec.and(UserSpecification.hasPhoneLike(request.getPhone_number()));
+        }
+        if (request.getRole() != null) {
+            spec = spec.and(UserSpecification.hasRole(request.getRole()));
+        }
+
+        return userRepository.findAll(spec);
+    }
 }

@@ -1,6 +1,6 @@
 package nsu.ponomareva.sport_web_1.controllers;
 
-import jakarta.validation.Valid;
+import nsu.ponomareva.sport_web_1.DTO.UserDTO;
 import nsu.ponomareva.sport_web_1.models.Event;
 import nsu.ponomareva.sport_web_1.models.User;
 import nsu.ponomareva.sport_web_1.services.UserService;
@@ -23,7 +23,7 @@ public class UserController {
 
     // Create a new user
     @PostMapping
-    public User createUser(@RequestBody ChangeUserRequest user) {
+    public User createUser(@RequestBody UserDTO user) {
         User createdUser = userService.createUser(user);
         if(createdUser == null){
             throw new CustomException("Пользователь с такими данными уже существует");
@@ -45,7 +45,7 @@ public class UserController {
 
     // Update user by ID
     @PutMapping("/{id}")
-    public User updateUser(@PathVariable Long id, @RequestBody ChangeUserRequest userDetails) {
+    public User updateUser(@PathVariable Long id, @RequestBody UserDTO userDetails) {
         return userService.updateUser(id, userDetails);
     }
 
@@ -75,5 +75,10 @@ public class UserController {
     @GetMapping("/{user_id}/events")
     public List<Event> getEvents(@PathVariable Long user_id){
         return userService.getEvents(user_id);
+    }
+
+    @PostMapping("/filters")
+    public List<User> getWithFilters(@RequestBody UserDTO request){
+        return userService.getWithFilters(request);
     }
 }

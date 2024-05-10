@@ -10,6 +10,7 @@ import { Button } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
 import CreateUser from '../components/CreateUser.js';
 
@@ -18,25 +19,6 @@ const Users = () => {
     const [coaches, setCoaches] = useState([]);
     const [showCreateUser, setShowCreateUser] = useState(false);
     const [onlyCoaches, setOnlyCoaches] = useState(false);
-
-    // useEffect(() => {
-    //     const fetchUsers = async () => {
-    //         try {
-    //             const token = localStorage.getItem('token');
-    //             const url = `${constList.BASE_URL}/api/users`;
-    //             const response = await axios.get(url, {
-    //             headers: {
-    //                 Authorization: `Bearer ${token}` // Добавляем токен в заголовок Authorization
-    //             }
-    //             });
-    //             setUsers(response.data);
-    //             console.log(response.data);
-    //         } catch (error) {
-    //             console.error('Ошибка при получении мероприятий:', error);
-    //         }
-    //     };
-    //     fetchUsers();
-    // }, []);
 
     useEffect(() => {
         if(onlyCoaches === false){

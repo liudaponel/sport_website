@@ -1,8 +1,8 @@
 package nsu.ponomareva.sport_web_1.services;
 
 import jakarta.transaction.Transactional;
-import nsu.ponomareva.sport_web_1.controllers.UserEventRequest;
-import nsu.ponomareva.sport_web_1.controllers.UserEventRequestByEmail;
+import nsu.ponomareva.sport_web_1.DTO.UserEventRequest;
+import nsu.ponomareva.sport_web_1.DTO.UserEventRequestByEmail;
 import nsu.ponomareva.sport_web_1.exceptions.CustomException;
 import nsu.ponomareva.sport_web_1.models.Event;
 import nsu.ponomareva.sport_web_1.models.User;

@@ -1,6 +1,7 @@
 package nsu.ponomareva.sport_web_1.controllers;
 
-import nsu.ponomareva.sport_web_1.models.Event;
+import nsu.ponomareva.sport_web_1.DTO.UserEventRequest;
+import nsu.ponomareva.sport_web_1.DTO.UserEventRequestByEmail;
 import nsu.ponomareva.sport_web_1.models.UserEvent;
 import nsu.ponomareva.sport_web_1.services.UserEventService;
 import nsu.ponomareva.sport_web_1.services.UserService;

@@ -1,4 +1,4 @@
-package nsu.ponomareva.sport_web_1.controllers;
+package nsu.ponomareva.sport_web_1.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserEventRequestByEmail {
-    String userEmail;
-    Long event;
+public class UserDTO {
+    String fio;
+    String email;
+    String phone_number;
+    String password;
+    Long role;
 }

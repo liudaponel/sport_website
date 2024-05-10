@@ -1,4 +1,4 @@
-package nsu.ponomareva.sport_web_1.controllers;
+package nsu.ponomareva.sport_web_1.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EventRequest {
+public class EventDTO {
     private String name;
     private Timestamp start_time;
     private Integer taken_places;
@@ -21,4 +21,5 @@ public class EventRequest {
     private Integer price;
     private Long place;
     private Long coach;
+    private String isSorted;
 }
