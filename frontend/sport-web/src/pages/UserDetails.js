@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { TextField, Button, Container, Typography, Select, InputLabel, MenuItem } from '@mui/material';
 
@@ -103,7 +103,7 @@ const UserDetails = () => {
         const token = localStorage.getItem('token');
         const url = `${constList.BASE_URL}/api/users/${id}`;
         try {
-        const response = await axios.put(url, user, {
+        await axios.put(url, user, {
             headers: {
             Authorization: `Bearer ${token}`
             }
@@ -120,7 +120,7 @@ const UserDetails = () => {
         const token = localStorage.getItem('token');
         const url = `${constList.BASE_URL}/api/coaches/${id}`;
         try {
-        const response = await axios.put(url, coach, {
+        await axios.put(url, coach, {
             headers: {
             Authorization: `Bearer ${token}`
             }

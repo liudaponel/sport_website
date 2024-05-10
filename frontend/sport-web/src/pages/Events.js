@@ -6,7 +6,7 @@ import AddIcon from '@mui/icons-material/Add';
 import * as constList from '../addition/Constants.js';
 import '../styles/Events.css'
 import '../styles/button.css'
-import { TextField, Button, Container, Select, InputLabel, MenuItem, emphasize } from '@mui/material';
+import { TextField, Button, Select, InputLabel, MenuItem, emphasize } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 
@@ -20,7 +20,7 @@ const Events = () => {
     const [selectedPlaceId, setSelectedPlaceId] = useState('');
     const [coaches, setCoaches] = useState([]);
     const [selectedCoachId, setSelectedCoachId] = useState('');
-    const [formData, setFormData] = useState({
+    const [filters, setFilters] = useState({
         name: '',
         place: '',
         start_time: '',
@@ -98,8 +98,8 @@ const Events = () => {
     const handleChange = e => {
         const { name, value } = e.target;
 
-        setFormData(prevFormData => ({
-            ...prevFormData,
+        setFilters(prevFilters => ({
+            ...prevFilters,
             [name]: value
         }));
     };
@@ -113,16 +113,15 @@ const Events = () => {
     };    
 
     const handleClickOKFilters = async () => {
-        console.log(formData.isSorted);
         const event = {
-            name: formData.name,
-            start_time: formData.start_time,
-            duration_hours: formData.duration_hours,
-            duration_minutes: formData.duration_minutes,
-            price: formData.price,
+            name: filters.name,
+            start_time: filters.start_time,
+            duration_hours: filters.duration_hours,
+            duration_minutes: filters.duration_minutes,
+            price: filters.price,
             place: selectedPlaceId,
             coach: selectedCoachId,
-            isSorted: formData.isSorted ? "true" : "false"
+            isSorted: filters.isSorted ? "true" : "false"
         }
         const token = localStorage.getItem('token');
         const url = `${constList.BASE_URL}/api/events/filters`;
@@ -139,7 +138,7 @@ const Events = () => {
     }
 
     const handleClickSort = () => {
-        formData.isSorted = !formData.isSorted;
+        filters.isSorted = !filters.isSorted;
     }
 
     return (
@@ -159,7 +158,7 @@ const Events = () => {
                             margin="normal"
                             label="Название"
                             name="name"
-                            value={formData.name}
+                            value={filters.name}
                             onChange={handleChange}
                         />
                         <TextField
@@ -167,7 +166,7 @@ const Events = () => {
                             label="Время начала"
                             name="start_time"
                             type="datetime-local"
-                            value={formData.start_time.slice(0, 16)}
+                            value={filters.start_time.slice(0, 16)}
                             onChange={handleChange}
                         />
                         <TextField
@@ -175,7 +174,7 @@ const Events = () => {
                             label="Длительность часы"
                             name="duration_hours"
                             type="number"
-                            value={formData.duration_hours}
+                            value={filters.duration_hours}
                             onChange={handleChange}
                         />
                         <TextField
@@ -183,7 +182,7 @@ const Events = () => {
                             label="Длительность минуты"
                             name="duration_minutes"
                             type="number"
-                            value={formData.duration_minutes}
+                            value={filters.duration_minutes}
                             onChange={handleChange}
                         />
                         <TextField
@@ -191,7 +190,7 @@ const Events = () => {
                             label="Стоимость"
                             name="price"
                             type="number"
-                            value={formData.price}
+                            value={filters.price}
                             onChange={handleChange}
                         />
                         <div>

@@ -1,6 +1,7 @@
 package nsu.ponomareva.sport_web_1.services;
 
 import jakarta.transaction.Transactional;
+import nsu.ponomareva.sport_web_1.DTO.EmailDTO;
 import nsu.ponomareva.sport_web_1.DTO.UserEventRequest;
 import nsu.ponomareva.sport_web_1.DTO.UserEventRequestByEmail;
 import nsu.ponomareva.sport_web_1.exceptions.CustomException;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class UserEventService {
@@ -30,6 +32,8 @@ public class UserEventService {
 
     @Autowired
     private EventRepository eventRepository;
+    @Autowired
+    private EmailService emailService;
 
     public List<UserEvent> getAllUserEvents() {
         return userEventRepository.findAll();
@@ -57,18 +61,23 @@ public class UserEventService {
                 .orElseThrow(() -> new RuntimeException("UserEvent not found with id " + id));
     }
 
+    @Transactional
     public UserEvent createUserEvent(UserEventRequest userEvent) {
         UserEvent ue = new UserEvent();
         User user = userRepository.findById(userEvent.getUser()).orElseThrow();
-        ue.setUser_id(user);
         Event event = eventRepository.findById(userEvent.getEvent()).orElseThrow();
+        if(Objects.equals(event.getTaken_places(), event.getMax_places())){
+            throw new CustomException("Все места заняты");
+        }
+        event.setTaken_places(event.getTaken_places() + 1);
+        eventRepository.save(event);
+
+        ue.setUser_id(user);
         ue.setEvent_id(event);
 
-        user.getRegistrations().add(ue);
-        userRepository.save(user);
-
-        event.getRegistrations().add(ue);
-        eventRepository.save(event);
+        String subject = "Запись на мероприятие";
+        String text = "Здравствуйте! Ваша заявка на участие в спортивном мероприятии была отправлена на модерацию администратору.";
+        emailService.sendSimpleMessage(user.getEmail(), subject, text);
 
         return userEventRepository.save(ue);
     }
@@ -78,8 +87,19 @@ public class UserEventService {
         UserEvent ue = new UserEvent();
         User user = userRepository.findByEmail(userEvent.getUserEmail()).orElseThrow();
         Event event = eventRepository.findById(userEvent.getEvent()).orElseThrow();
+        if(Objects.equals(event.getTaken_places(), event.getMax_places())){
+            throw new CustomException("Все места заняты");
+        }
+        event.setTaken_places(event.getTaken_places() + 1);
+        eventRepository.save(event);
+
         ue.setUser_id(user);
         ue.setEvent_id(event);
+
+        String subject = "Запись на мероприятие";
+        String text = "Здравствуйте! Ваша заявка на участие в спортивном мероприятии " + event.getName() + " была отправлена на модерацию администратору.";
+        emailService.sendSimpleMessage(user.getEmail(), subject, text);
+
         return userEventRepository.save(ue);
     }
 
@@ -88,6 +108,10 @@ public class UserEventService {
                 .orElseThrow(() -> new CustomException("UserEvent not found with id " + id));
         existingUserEvent.setChecked(true);
         userEventRepository.save(existingUserEvent);
+
+        String subject = "Запись на мероприятие";
+        String text = "Здравствуйте! Вы зарегистрированы на мероприятие " + existingUserEvent.getEvent_id().getName();
+        emailService.sendSimpleMessage(existingUserEvent.getUser_id().getEmail(), subject, text);
     }
 
     public void deleteUserEvent(Long id) {

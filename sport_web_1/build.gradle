@@ -31,6 +31,7 @@ dependencies {
 	implementation 'com.auth0:java-jwt:4.4.0'
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '3.2.4'
 	compileOnly group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: '6.1.0-M2'
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '3.2.5'
 }
 
 tasks.named('test') {

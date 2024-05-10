@@ -17,6 +17,7 @@ import EventDetails from '../pages/EventDetails';
 import LoginDialog from '../components/LoginDialog';
 import PlaceDetails from '../pages/PlaceDetails';
 import UserDetails from '../pages/UserDetails';
+import QueryPage from '../pages/QueryPage';
 
 
 // Главный компонент приложения
@@ -37,6 +38,9 @@ function Navbar() {
                 {localStorage.getItem('role') === 'Администратор' && (<Link to="/registrations" style={{ textDecoration: 'none' }}>
                     <IconButton>Подтвердить <AccessAlarmIcon className='my-button'/> </IconButton>
                 </Link>)}
+                {localStorage.getItem('role') === 'Администратор' && (<Link to="/query" style={{ textDecoration: 'none' }}>
+                    <IconButton>Query </IconButton>
+                </Link>)}
                 <IconButton onClick={() => setLoginOpen(true)}>
                     <AccountCircleIcon className="header-icon" />
                 </IconButton>
@@ -52,6 +56,7 @@ function Navbar() {
                     <Route path="/places" exact={true} element={<Places />} />
                     <Route path="/places/:id" element={<PlaceDetails />} />
                     <Route path="/registrations" exact={true} element={<Registrations />} />
+                    <Route path="/query" element={<QueryPage />} />
                 </Routes>
             </div>
         </div>

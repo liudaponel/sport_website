@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { TextField, Button, Container, Typography, Select, InputLabel, MenuItem, emphasize } from '@mui/material';
+import { TextField, Button, Container, Typography, Select, InputLabel, MenuItem } from '@mui/material';
 
 import * as constList from '../addition/Constants.js';
 
@@ -115,7 +115,7 @@ const EventDetails = () => {
         const token = localStorage.getItem('token');
         const url = `${constList.BASE_URL}/api/events/${id}`;
         try {
-        const response = await axios.put(url, event, {
+        await axios.put(url, event, {
             headers: {
             Authorization: `Bearer ${token}`
             }
@@ -125,6 +125,7 @@ const EventDetails = () => {
     };
 
     const clickRegister = async e => {
+        console.log("click register");
         e.preventDefault();
         const token = localStorage.getItem('token');
         const request = {
@@ -132,13 +133,15 @@ const EventDetails = () => {
             userEmail: localStorage.getItem('email')
         }
         const url = `${constList.BASE_URL}/api/registrations/byEmail`;
-        const response = await axios.post(url, request, {
-            headers: {
-            Authorization: `Bearer ${token}`
-            }
-        }).then(response => {
-            alert("Вы успешно зарегистрированы!");
-        });
+        await axios.post(url, request, {
+                headers: {
+                Authorization: `Bearer ${token}`
+                }
+            }).then(response => {
+                alert("Вы успешно зарегистрированы!");
+            }).catch(error => {
+                alert(error);
+            });
     }
 
     return (

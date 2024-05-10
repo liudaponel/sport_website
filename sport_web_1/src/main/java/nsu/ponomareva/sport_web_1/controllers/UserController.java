@@ -67,11 +67,6 @@ public class UserController {
         userService.deleteUser(id);
     }
 
-//    @PostMapping("/register_on_event/{event_id}")
-//    public void register_on_event(@PathVariable Long event_id, @RequestBody User email){
-//        userService.register_on_event(event_id, email);
-//    }
-
     @GetMapping("/{user_id}/events")
     public List<Event> getEvents(@PathVariable Long user_id){
         return userService.getEvents(user_id);

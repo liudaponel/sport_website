@@ -6,11 +6,10 @@ import AddIcon from '@mui/icons-material/Add';
 import * as constList from '../addition/Constants.js';
 import '../styles/Users.css'
 import '../styles/button.css'
-import { Button } from '@mui/material';
+import { TextField, Button, Select, InputLabel, MenuItem} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
 import CreateUser from '../components/CreateUser.js';
 
@@ -19,6 +18,15 @@ const Users = () => {
     const [coaches, setCoaches] = useState([]);
     const [showCreateUser, setShowCreateUser] = useState(false);
     const [onlyCoaches, setOnlyCoaches] = useState(false);
+
+    const [filters, setFilters] = useState({
+        fio: '',
+        email: '',
+        phone_number: '',
+        role: ''
+    });
+    const [roles, setRoles] = useState([]);
+    const [selectedRoleId, setSelectedRoleId] = useState('');
 
     useEffect(() => {
         if(onlyCoaches === false){
@@ -57,6 +65,23 @@ const Users = () => {
         }
     }, [onlyCoaches]);
 
+    useEffect(() => {
+        const fetchRoles = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await axios.get(`${constList.BASE_URL}/api/roles`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                setRoles(response.data);
+            } catch (error) {
+                console.error('Ошибка при получении списка ролей:', error);
+            }
+        };
+        fetchRoles();
+    }, []);
+
     const handleCreateUserClick = () => {
         setShowCreateUser(true);
     };
@@ -81,6 +106,39 @@ const Users = () => {
     const handleSwitchCoaches = (event) => {
         setOnlyCoaches(event.target.checked);
     }
+
+    const handleSelectChange = (e) => {
+        setSelectedRoleId(e.target.value);
+    };
+
+    const handleChange = e => {
+        const { name, value } = e.target;
+        setFilters(prevFilters => ({
+            ...prevFilters,
+            [name]: value
+        }));
+    };
+
+    const handleClickOKFilters = async () => {
+        const user = {
+            fio: filters.fio,
+            email: filters.email,
+            phone_number: filters.phone_number,
+            role: selectedRoleId
+        }
+        const token = localStorage.getItem('token');
+        const url = `${constList.BASE_URL}/api/users/filters`;
+        try {
+        const response = await axios.post(url, user, {
+            headers: {
+            Authorization: `Bearer ${token}`
+            }
+        });
+        setUsers(response.data);
+
+        } catch (error) {
+        }
+    }
     
 
     return (
@@ -100,6 +158,51 @@ const Users = () => {
                             label="Только тренеры"
                             />
                     </h1>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <TextField
+                            fullWidth
+                            margin="normal"
+                            label="ФИО"
+                            name="fio"
+                            value={filters.fio}
+                            onChange={handleChange}
+                        />
+                        <TextField
+                            fullWidth
+                            margin="normal"
+                            label="Email"
+                            name="email"
+                            value={filters.email}
+                            onChange={handleChange}
+                        />
+                        <TextField
+                            fullWidth
+                            margin="normal"
+                            label="Номер телефона"
+                            name="phone_number"
+                            value={filters.phone_number}
+                            onChange={handleChange}
+                        />
+                        <div>
+                        <InputLabel id="select-label">Роль</InputLabel>
+                            <Select 
+                                labelId="select-label"
+                                label="Роль"
+                                fullWidth={true}
+                                variant="outlined"
+                                value={selectedRoleId} 
+                                onChange={handleSelectChange}>
+                                
+                                {roles.map(role => (
+                                    <MenuItem key={role.role_id} value={role.role_id}>
+                                        {role.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </div>
+                        <Button variant="contained" color='warning' onClick={handleClickOKFilters}>OK</Button>
+                    </div>
+
                     {onlyCoaches ? (
                         <div className="user-container">
                             {coaches.map(coach => {

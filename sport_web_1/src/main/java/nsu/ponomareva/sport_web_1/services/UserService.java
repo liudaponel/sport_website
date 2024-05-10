@@ -98,15 +98,6 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-//    public void register_on_event(Long event_id, User user){
-//        String email = user.getEmail();
-//        User user_my = userRepository.findByEmail(email).orElseThrow();
-//        Event event = eventRepository.findById(event_id).orElseThrow();
-//
-//        user_my.getEvents().add(event);
-//        userRepository.save(user_my);
-//    }
-
     public List<Event> getEvents(Long id){
         User user = userRepository.findById(id).orElseThrow();
         Set<UserEvent> ue = user.getRegistrations();
