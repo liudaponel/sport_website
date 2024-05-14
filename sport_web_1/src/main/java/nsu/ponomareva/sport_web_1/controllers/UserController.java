@@ -7,6 +7,8 @@ import nsu.ponomareva.sport_web_1.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 import nsu.ponomareva.sport_web_1.exceptions.CustomException;
 
@@ -33,8 +35,9 @@ public class UserController {
 
     // Get all users
     @GetMapping
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    public Page<User> getAllUsers(@RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(defaultValue = "5") int size) {
+        return userService.getAllUsers(page, size);
     }
 
     // Get user by ID
@@ -73,7 +76,9 @@ public class UserController {
     }
 
     @PostMapping("/filters")
-    public List<User> getWithFilters(@RequestBody UserDTO request){
-        return userService.getWithFilters(request);
+    public Page<User> getWithFilters(@RequestBody UserDTO request,
+                                     @RequestParam(defaultValue = "0") int page,
+                                     @RequestParam(defaultValue = "5") int size){
+        return userService.getWithFilters(request, page, size);
     }
 }

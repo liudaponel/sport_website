@@ -18,7 +18,7 @@ import LoginDialog from '../components/LoginDialog';
 import PlaceDetails from '../pages/PlaceDetails';
 import UserDetails from '../pages/UserDetails';
 import QueryPage from '../pages/QueryPage';
-
+import ResetPassword from './ResetPassword'
 
 // Главный компонент приложения
 function Navbar() {
@@ -57,6 +57,7 @@ function Navbar() {
                     <Route path="/places/:id" element={<PlaceDetails />} />
                     <Route path="/registrations" exact={true} element={<Registrations />} />
                     <Route path="/query" element={<QueryPage />} />
+                    <Route path="/reset-password/:token" element={<ResetPassword/>}/>
                 </Routes>
             </div>
         </div>

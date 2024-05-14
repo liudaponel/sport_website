@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState} from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -11,6 +11,7 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 import * as constList from '../addition/Constants.js';
 import '../styles/LoginDialog.css'
+import '../styles/button.css'
 
 function decodeAndSaveToken(token) {
     const [headerEncoded, payloadEncoded] = token.split('.');
@@ -31,6 +32,7 @@ function LoginDialog({ open, onClose }) {
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
     const [isRegistering, setIsRegistering] = useState(false);
+    const [isForgot, setIsForgot] = useState(false);
 
     const [errors, setErrors] = useState({});
 
@@ -87,11 +89,27 @@ function LoginDialog({ open, onClose }) {
         });
     };
 
+    const handleClickForgotPassword = async () => {
+        const url = `${constList.BASE_URL}/api/auth/reset-password?email=${email}`;
+        axios.post(url)
+        .then(response => {
+            alert(`Вам было отправлено сообщение на почту ${email} для восстановления пароля`);
+            onClose();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    const clickForgot = () => {
+        setIsForgot(!isForgot);
+    }
+
     return (
         <Dialog open={open} onClose={onClose}>
             <DialogTitle sx={{ fontSize: 20, display: 'flex', justifyContent: 'space-between' }}>
                 <span>{isRegistering ? 'Регистрация' : 'Вход'}</span>
-                <Button onClick={onClose}><HighlightOffIcon /></Button>
+                <Button onClick={onClose} className='my-button'><HighlightOffIcon /></Button>
             </DialogTitle>
 
         <DialogContent>
@@ -100,7 +118,7 @@ function LoginDialog({ open, onClose }) {
                 ? 'Введите свои данные для регистрации:'
                 : 'Введите имя или эл.почту и пароль:'}
             </DialogContentText>
-            {isRegistering > 0 && (<TextField
+            {isRegistering > 0 && !isForgot && (<TextField
             autoFocus
             margin="dense"
             label="ФИО"
@@ -116,22 +134,23 @@ function LoginDialog({ open, onClose }) {
             />
             )}
             {errors.fio && <div className="red-text">{errors.fio}</div>}
-            <TextField
-            autoFocus
-            margin="dense"
-            label="Электронная почта"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            fullWidth
-            inputProps={{
-                style: {
-                height: "30px",
-                fontSize: 20
-                },
-            }}
-            />
+            {!isForgot && (
+                <TextField
+                autoFocus
+                margin="dense"
+                label="Электронная почта"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                fullWidth
+                inputProps={{
+                    style: {
+                    height: "30px",
+                    fontSize: 20
+                    },
+                }}
+                />)}
             {errors.email && <div className="red-text">{errors.email}</div>}
-            {isRegistering > 0 && (<TextField
+            {isRegistering > 0 && !isForgot && (<TextField
             autoFocus
             margin="dense"
             label="Номер телефона"
@@ -147,37 +166,59 @@ function LoginDialog({ open, onClose }) {
             />
             )}
             {errors.phone_number && <div className="red-text">{errors.phone_number}</div>}
-            <TextField
-            margin="dense"
-            label="Пароль"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            fullWidth
-            inputProps={{
-                style: {
-                height: "30px",
-                fontSize: 20
-                },
-            }}
-            />
+            {!isForgot && (
+                <TextField
+                margin="dense"
+                label="Пароль"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                fullWidth
+                inputProps={{
+                    style: {
+                    height: "30px",
+                    fontSize: 20
+                    },
+                }}
+                />)}
             {errors.password && <div className="red-text">{errors.password}</div>}
+
+            {isForgot && (
+                <TextField
+                autoFocus
+                margin="dense"
+                label="Электронная почта"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                fullWidth
+                inputProps={{
+                    style: {
+                    height: "30px",
+                    fontSize: 20
+                    },
+                }}
+                />
+            )}
+            {isForgot && (
+                <Button onClick={handleClickForgotPassword}>OK</Button>
+            )}
         </DialogContent>
         <DialogActions>
             {isRegistering ? (
-            <Button onClick={handleRegister} variant="contained" color="primary" sx={{ fontSize: 16 }}>
-                Зарегистрироваться
-            </Button>
-            ) : (
-            <Button onClick={handleLogin} variant="contained" color="primary" sx={{ fontSize: 16 }}>
-                Войти
-            </Button>
+                <Button onClick={handleRegister} variant="contained" color="warning" sx={{ fontSize: 16 }}>
+                    Зарегистрироваться
+                </Button>
+                ) : (
+                <Button onClick={handleLogin} variant="contained" color="warning" sx={{ fontSize: 16 }}>
+                    Войти
+                </Button>
             )}
             {!isRegistering ? (
-            <Button onClick={() => setIsRegistering(true)} sx={{ fontSize: 16 }}>Зарегистрироваться</Button>
-            ) : (
-            <Button onClick={() => setIsRegistering(false)} sx={{ fontSize: 16 }}>Войти</Button>
+                <Button onClick={() => setIsRegistering(true)} sx={{ fontSize: 16 }}>Зарегистрироваться</Button>
+                ) : (
+                <Button onClick={() => setIsRegistering(false)} sx={{ fontSize: 16 }}>Войти</Button>
             )}
+            <Button onClick={clickForgot}>Забыл пароль</Button>
         </DialogActions>
         </Dialog>
   );

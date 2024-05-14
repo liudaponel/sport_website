@@ -38,5 +38,7 @@ public class User {
     private Role role;
 
     @OneToMany(mappedBy = "user_id")
-    Set<UserEvent> registrations;
+    private Set<UserEvent> registrations;
+
+    private String reset_token;
 }

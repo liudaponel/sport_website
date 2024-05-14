@@ -28,6 +28,9 @@ const Users = () => {
     const [roles, setRoles] = useState([]);
     const [selectedRoleId, setSelectedRoleId] = useState('');
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
+
     useEffect(() => {
         if(onlyCoaches === false){
             const fetchUsers = async () => {
@@ -81,6 +84,20 @@ const Users = () => {
         };
         fetchRoles();
     }, []);
+
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         try {
+    //             const response = await axios.get(`/api/users?page=${currentPage}`);
+    //             // setUsers(response.data.content);
+    //             // setTotalPages(response.data.totalPages);
+    //             console.log(response.data);
+    //         } catch (error) {
+    //             console.error('Error get users:', error);
+    //         }
+    //     }
+    //     fetchData();
+    // }, [currentPage]);
 
     const handleCreateUserClick = () => {
         setShowCreateUser(true);

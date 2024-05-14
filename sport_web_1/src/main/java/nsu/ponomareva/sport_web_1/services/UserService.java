@@ -14,6 +14,8 @@ import nsu.ponomareva.sport_web_1.specifications.UserSpecification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -57,8 +59,8 @@ public class UserService {
     }
 
     // Get all users
-    public List<User> getAllUsers() {
-        List<User> users = userRepository.findAll();
+    public Page<User> getAllUsers(int page, int size) {
+        Page<User> users = userRepository.findAll(PageRequest.of(page, size));
         return users;
     }
 
@@ -108,7 +110,7 @@ public class UserService {
         return events;
     }
 
-    public List<User> getWithFilters(UserDTO request) {
+    public Page<User> getWithFilters(UserDTO request, int page, int size) {
         Specification<User> spec = Specification.where(null);
 
         if (request.getFio() != null) {
@@ -124,6 +126,6 @@ public class UserService {
             spec = spec.and(UserSpecification.hasRole(request.getRole()));
         }
 
-        return userRepository.findAll(spec);
+        return userRepository.findAll(spec, PageRequest.of(page, size));
     }
 }
