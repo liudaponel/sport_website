@@ -10,6 +10,8 @@ import { TextField, Button, Select, InputLabel, MenuItem} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 import CreateUser from '../components/CreateUser.js';
 
@@ -28,21 +30,22 @@ const Users = () => {
     const [roles, setRoles] = useState([]);
     const [selectedRoleId, setSelectedRoleId] = useState('');
 
-    const [currentPage, setCurrentPage] = useState(1);
+    const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
 
-    useEffect(() => {
+    const getUsersOrCoaches = async () => {
         if(onlyCoaches === false){
             const fetchUsers = async () => {
                 try {
                     const token = localStorage.getItem('token');
-                    const url = `${constList.BASE_URL}/api/users`;
-                    const response = await axios.get(url, {
+                    const url = `${constList.BASE_URL}/api/users?page=${currentPage}`;
+                    const response = await axios.get(url,  {
                     headers: {
                         Authorization: `Bearer ${token}` // Добавляем токен в заголовок Authorization
                     }
                     });
-                    setUsers(response.data);
+                    setUsers(response.data.content);
+                    setTotalPages(response.data.totalPages);
                 } catch (error) {
                     console.error('Ошибка при получении мероприятий:', error);
                 }
@@ -53,20 +56,23 @@ const Users = () => {
             const fetchCoaches = async () => {
                 try {
                     const token = localStorage.getItem('token');
-                    const url = `${constList.BASE_URL}/api/coaches`;
+                    const url = `${constList.BASE_URL}/api/coaches?page=${0}`;
                     const response = await axios.get(url, {
                     headers: {
                         Authorization: `Bearer ${token}` // Добавляем токен в заголовок Authorization
                     }
                     });
-                    setCoaches(response.data);
+                    setCoaches(response.data.content);
+                    setTotalPages(response.data.totalPages);
                 } catch (error) {
                     console.error('Ошибка при получении мероприятий:', error);
                 }
             };
             fetchCoaches();
         }
-    }, [onlyCoaches]);
+    }
+
+    useEffect(() => {getUsersOrCoaches()}, [currentPage, onlyCoaches]);
 
     useEffect(() => {
         const fetchRoles = async () => {
@@ -84,20 +90,6 @@ const Users = () => {
         };
         fetchRoles();
     }, []);
-
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         try {
-    //             const response = await axios.get(`/api/users?page=${currentPage}`);
-    //             // setUsers(response.data.content);
-    //             // setTotalPages(response.data.totalPages);
-    //             console.log(response.data);
-    //         } catch (error) {
-    //             console.error('Error get users:', error);
-    //         }
-    //     }
-    //     fetchData();
-    // }, [currentPage]);
 
     const handleCreateUserClick = () => {
         setShowCreateUser(true);
@@ -144,19 +136,31 @@ const Users = () => {
             role: selectedRoleId
         }
         const token = localStorage.getItem('token');
-        const url = `${constList.BASE_URL}/api/users/filters`;
+        const url = `${constList.BASE_URL}/api/users/filters?page=${currentPage}`;
         try {
         const response = await axios.post(url, user, {
             headers: {
             Authorization: `Bearer ${token}`
             }
         });
-        setUsers(response.data);
+        setUsers(response.data.content);
+        setTotalPages(response.data.totalPages);
 
         } catch (error) {
         }
     }
     
+    const clickBackPage = async () => {
+        if(currentPage > 0){
+            setCurrentPage(currentPage - 1);
+        }
+    }
+
+    const clickForwardPage = async () => {
+        if(currentPage < totalPages - 1){
+            setCurrentPage(currentPage + 1);
+        }
+    }
 
     return (
         <div>
@@ -175,6 +179,11 @@ const Users = () => {
                             label="Только тренеры"
                             />
                     </h1>
+                    <div>
+                        Страница: {currentPage + 1} / {totalPages}
+                        <Button onClick={clickBackPage}> <ArrowBackIcon/> </Button>
+                        <Button onClick={clickForwardPage}> <ArrowForwardIcon/> </Button>
+                    </div>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         <TextField
                             fullWidth

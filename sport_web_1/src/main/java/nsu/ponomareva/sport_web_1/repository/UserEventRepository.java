@@ -13,6 +13,9 @@ public interface UserEventRepository extends JpaRepository<UserEvent, Long> {
     @Query(value = "SELECT * FROM users_events WHERE user_id =?1 AND is_checked =true", nativeQuery = true)
     Optional<List<UserEvent>> findByUserId(Long user_id);
 
+    @Query(value = "SELECT * FROM users_events WHERE event_id =?1 AND is_checked =true", nativeQuery = true)
+    Optional<List<UserEvent>> findByEventId(Long event_id);
+
     @Query(value = "SELECT * FROM users_events WHERE is_checked =false", nativeQuery = true)
     Optional<List<UserEvent>> findNotChecked();
 

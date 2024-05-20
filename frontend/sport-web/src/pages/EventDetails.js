@@ -73,7 +73,7 @@ const EventDetails = () => {
                             Authorization: `Bearer ${token}`
                         }
                     });
-                    setCoaches(coachesResponse.data);
+                    setCoaches(coachesResponse.data.content);
                 } catch (error) {
                     console.error('Ошибка при получении данных для администратора:', error);
                 }

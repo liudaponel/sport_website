@@ -9,6 +9,8 @@ import '../styles/button.css'
 import { TextField, Button, Select, InputLabel, MenuItem, emphasize } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 import CreateEvent from '../components/CreateEvent.js';
 
@@ -31,17 +33,21 @@ const Events = () => {
         isSorted: false
     });
 
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+
     useEffect(() => {
         const fetchEvents = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const url = `${constList.BASE_URL}/api/events`;
+                const url = `${constList.BASE_URL}/api/events?page=${currentPage}`;
                 const response = await axios.get(url, {
                 headers: {
                     Authorization: `Bearer ${token}` // Добавляем токен в заголовок Authorization
                 }
                 });
-                setEvents(response.data);
+                setEvents(response.data.content);
+                setTotalPages(response.data.totalPages);
                 console.log(response.data);
             } catch (error) {
                 console.error('Ошибка при получении мероприятий:', error);
@@ -64,13 +70,13 @@ const Events = () => {
                         Authorization: `Bearer ${token}`
                     }
                 });
-                setCoaches(coachesResponse.data);
+                setCoaches(coachesResponse.data.content);
             } catch (error) {
                 console.error('Ошибка при получении данных для администратора:', error);
             }
         };
         fetchAdminData();
-    }, []);
+    }, [currentPage]);
 
     const handleCreateEventClick = () => {
         setShowCreateEvent(true);
@@ -124,21 +130,30 @@ const Events = () => {
             isSorted: filters.isSorted ? "true" : "false"
         }
         const token = localStorage.getItem('token');
-        const url = `${constList.BASE_URL}/api/events/filters`;
+        const url = `${constList.BASE_URL}/api/events/filters?page=${currentPage}`;
         try {
         const response = await axios.post(url, event, {
             headers: {
             Authorization: `Bearer ${token}`
             }
         });
-        setEvents(response.data);
+        setEvents(response.data.content);
+        setTotalPages(response.data.totalPages);
 
         } catch (error) {
         }
     }
 
-    const handleClickSort = () => {
-        filters.isSorted = !filters.isSorted;
+    const clickBackPage = async () => {
+        if(currentPage > 0){
+            setCurrentPage(currentPage - 1);
+        }
+    }
+
+    const clickForwardPage = async () => {
+        if(currentPage < totalPages - 1){
+            setCurrentPage(currentPage + 1);
+        }
     }
 
     return (
@@ -153,6 +168,11 @@ const Events = () => {
                         {localStorage.getItem('role') === 'Администратор' && 
                             (<Button onClick={handleCreateEventClick}> <AddIcon className="my-button"/> </Button>)}
                     </h1>
+                    <div>
+                        Страница: {currentPage + 1} / {totalPages}
+                        <Button onClick={clickBackPage}> <ArrowBackIcon/> </Button>
+                        <Button onClick={clickForwardPage}> <ArrowForwardIcon/> </Button>
+                    </div>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         <TextField
                             margin="normal"
@@ -166,7 +186,7 @@ const Events = () => {
                             label="Время начала"
                             name="start_time"
                             type="datetime-local"
-                            value={filters.start_time.slice(0, 16)}
+                            value={filters.start_time}
                             onChange={handleChange}
                         />
                         <TextField
@@ -221,7 +241,7 @@ const Events = () => {
                                 ))}
                             </Select>
                         </div>
-                        <Button onClick={handleClickSort}> <FilterListIcon className='my-button'/> </Button>
+                        {/* <Button onClick={handleClickSort}> <FilterListIcon className='my-button'/> </Button> */}
                         <Button variant="contained" color='warning' onClick={handleClickOKFilters}>OK</Button>
                     </div>
                     <div className="event-container">

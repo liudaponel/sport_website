@@ -5,6 +5,7 @@ import nsu.ponomareva.sport_web_1.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +24,9 @@ public class EventController {
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @GetMapping
-    public ResponseEntity<List<Event>> getAllEvents() {
-        List<Event> events = eventService.getAllEvents();
+    public ResponseEntity<Page<Event>> getAllEvents(@RequestParam(defaultValue = "0") int page,
+                                                    @RequestParam(defaultValue = "5") int size) {
+        Page<Event> events = eventService.getAllEvents(page, size);
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
 
@@ -61,8 +63,10 @@ public class EventController {
     }
 
     @PostMapping("/filters")
-    ResponseEntity<List<Event>> getWithFilters(@RequestBody EventDTO request){
-        List<Event> events = eventService.getWithFilters(request);
+    ResponseEntity<Page<Event>> getWithFilters(@RequestBody EventDTO request,
+                                               @RequestParam(defaultValue = "0") int page,
+                                               @RequestParam(defaultValue = "5") int size){
+        Page<Event> events = eventService.getWithFilters(request, page, size);
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
 }

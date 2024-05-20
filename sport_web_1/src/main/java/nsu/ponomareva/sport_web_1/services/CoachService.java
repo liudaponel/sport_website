@@ -7,6 +7,8 @@ import nsu.ponomareva.sport_web_1.repository.CoachRepository;
 import nsu.ponomareva.sport_web_1.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -22,8 +24,8 @@ public class CoachService {
     private UserRepository userRepository;
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    public List<Coach> getAllCoaches() {
-        return coachRepository.findAll();
+    public Page<Coach> getAllCoaches(int page, int size) {
+        return coachRepository.findAll(PageRequest.of(page, size));
     }
 
     public Coach getCoachById(Long id) {

@@ -6,6 +6,7 @@ import nsu.ponomareva.sport_web_1.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +23,9 @@ public class CoachController {
     private CoachService coachService;
 
     @GetMapping
-    public ResponseEntity<List<Coach>> getAllCoaches() {
-        List<Coach> coaches = coachService.getAllCoaches();
+    public ResponseEntity<Page<Coach>> getAllCoaches(@RequestParam(defaultValue = "0") int page,
+                                                     @RequestParam(defaultValue = "10") int size) {
+        Page<Coach> coaches = coachService.getAllCoaches(page, size);
         return new ResponseEntity<>(coaches, HttpStatus.OK);
     }
 

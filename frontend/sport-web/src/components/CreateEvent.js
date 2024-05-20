@@ -43,7 +43,7 @@ const CreateEvent = ({onClose}) => {
                     Authorization: `Bearer ${token}` // Добавляем токен в заголовок Authorization
                     }
                 });
-                setCoaches(response2.data);
+                setCoaches(response2.data.content);
             }
             catch (error) {
                 console.error('Ошибка при получении списка тренеров:', error);
@@ -67,9 +67,11 @@ const CreateEvent = ({onClose}) => {
 
     const handleSubmit = async e => {
         e.preventDefault();
+        let new_startTime = new Date(formData.start_time);
+        // new_startTime.setHours(new_startTime.getHours() - 7);
         const event = {
             name: formData.name,
-            start_time: formData.start_time,
+            start_time: new_startTime,
             taken_places: formData.taken_places,
             max_places: formData.max_places,
             duration_hours: formData.duration_hours,

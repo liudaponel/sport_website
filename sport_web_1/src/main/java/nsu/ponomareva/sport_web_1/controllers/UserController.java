@@ -36,7 +36,7 @@ public class UserController {
     // Get all users
     @GetMapping
     public Page<User> getAllUsers(@RequestParam(defaultValue = "0") int page,
-                                  @RequestParam(defaultValue = "5") int size) {
+                                  @RequestParam(defaultValue = "6") int size) {
         return userService.getAllUsers(page, size);
     }
 
@@ -78,7 +78,7 @@ public class UserController {
     @PostMapping("/filters")
     public Page<User> getWithFilters(@RequestBody UserDTO request,
                                      @RequestParam(defaultValue = "0") int page,
-                                     @RequestParam(defaultValue = "5") int size){
+                                     @RequestParam(defaultValue = "6") int size){
         return userService.getWithFilters(request, page, size);
     }
 }
