@@ -2,6 +2,7 @@ package nsu.ponomareva.sport_web_1.services;
 
 import jakarta.validation.constraints.Email;
 import nsu.ponomareva.sport_web_1.DTO.EventDTO;
+import nsu.ponomareva.sport_web_1.DTO.EventsReportDTO;
 import nsu.ponomareva.sport_web_1.notify.NotificationJob;
 import nsu.ponomareva.sport_web_1.repository.CoachRepository;
 import nsu.ponomareva.sport_web_1.repository.PlaceRepository;
@@ -19,6 +20,8 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Calendar;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import nsu.ponomareva.sport_web_1.models.Event;
 import nsu.ponomareva.sport_web_1.repository.EventRepository;
@@ -61,9 +64,9 @@ public class EventService {
         event.setName(request.getName());
         event.setPrice(request.getPrice());
 
-        CreateNotification(event);
-
         eventRepository.save(event);
+
+        CreateNotification(event);
     }
 
     public Event updateEvent(Long id, EventDTO newEventData) {
@@ -118,6 +121,14 @@ public class EventService {
         return eventRepository.findAll(spec, PageRequest.of(page, size));
     }
 
+    public List<EventsReportDTO> getReport(Long place_id, Timestamp start_time, Timestamp end_time){
+        List<Object[]> results = eventRepository.findEventsByPlaceAndStartTimeBetween(place_id, start_time, end_time);
+        return results.stream()
+                .map(result -> new EventsReportDTO((String) result[0], (Long) result[1], (Timestamp) result[2], (Long) result[3]))
+                .collect(Collectors.toList());
+    }
+
+
     private void CreateNotification(Event event){
         JobDataMap jobDataMap = new JobDataMap();
         jobDataMap.put("userEventRepository", userEventRepository);
@@ -125,7 +136,6 @@ public class EventService {
         jobDataMap.put("emailService", emailService);
         jobDataMap.put("event_name", event.getName());
         jobDataMap.put("N", N_HOURS_NOTIFICATION);
-        logger.info("event_id: " + event.getEvent_id());
 
         JobDetail job = JobBuilder.newJob(NotificationJob.class)
                 .withIdentity("notificationJob_" + event.getEvent_id(), "group1") // Устанавливаем уникальный идентификатор задачи
@@ -134,8 +144,6 @@ public class EventService {
 
         // Установка времени выполнения задачи
         Date notificationTime = calculateNotificationTime(event.getStart_time());
-        logger.info("last date: " + event.getStart_time());
-        logger.info("new date: " + notificationTime);
         Trigger trigger = TriggerBuilder.newTrigger()
                 .withIdentity("notificationTrigger_" + event.getEvent_id(), "group1") // Устанавливаем уникальный идентификатор триггера
                 .startAt(notificationTime) // Устанавливаем время начала выполнения задачи

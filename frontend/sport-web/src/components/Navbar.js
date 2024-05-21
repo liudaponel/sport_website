@@ -18,6 +18,7 @@ import LoginDialog from '../components/LoginDialog';
 import PlaceDetails from '../pages/PlaceDetails';
 import UserDetails from '../pages/UserDetails';
 import QueryPage from '../pages/QueryPage';
+import Report from '../pages/Report';
 import ResetPassword from './ResetPassword'
 
 // Главный компонент приложения
@@ -41,6 +42,9 @@ function Navbar() {
                 {localStorage.getItem('role') === 'Администратор' && (<Link to="/query" style={{ textDecoration: 'none' }}>
                     <IconButton>Query </IconButton>
                 </Link>)}
+                {localStorage.getItem('role') === 'Администратор' && (<Link to="/report" style={{ textDecoration: 'none' }}>
+                    <IconButton>Отчёт </IconButton>
+                </Link>)}
                 <IconButton onClick={() => setLoginOpen(true)}>
                     <AccountCircleIcon className="header-icon" />
                 </IconButton>
@@ -57,6 +61,7 @@ function Navbar() {
                     <Route path="/places/:id" element={<PlaceDetails />} />
                     <Route path="/registrations" exact={true} element={<Registrations />} />
                     <Route path="/query" element={<QueryPage />} />
+                    <Route path="/report" element={<Report />}/>
                     <Route path="/reset-password/:token" element={<ResetPassword/>}/>
                 </Routes>
             </div>

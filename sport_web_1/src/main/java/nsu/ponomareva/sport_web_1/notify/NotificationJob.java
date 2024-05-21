@@ -31,8 +31,6 @@ public class NotificationJob implements Job {
         for(UserEvent user : users){
             emailService.sendSimpleMessage(user.getUser_id().getEmail(), subject, text);
         }
-
-        logger.info(event_name, users.get(0).getUser_id().getEmail());
     }
 }
 

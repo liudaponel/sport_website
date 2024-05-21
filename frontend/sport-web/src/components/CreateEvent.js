@@ -68,7 +68,6 @@ const CreateEvent = ({onClose}) => {
     const handleSubmit = async e => {
         e.preventDefault();
         let new_startTime = new Date(formData.start_time);
-        // new_startTime.setHours(new_startTime.getHours() - 7);
         const event = {
             name: formData.name,
             start_time: new_startTime,

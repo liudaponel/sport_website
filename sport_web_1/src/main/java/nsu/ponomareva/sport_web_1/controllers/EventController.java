@@ -1,6 +1,8 @@
 package nsu.ponomareva.sport_web_1.controllers;
 
 import nsu.ponomareva.sport_web_1.DTO.EventDTO;
+import nsu.ponomareva.sport_web_1.DTO.EventsReportDTO;
+import nsu.ponomareva.sport_web_1.DTO.RequestEventReportDTO;
 import nsu.ponomareva.sport_web_1.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +27,7 @@ public class EventController {
 
     @GetMapping
     public ResponseEntity<Page<Event>> getAllEvents(@RequestParam(defaultValue = "0") int page,
-                                                    @RequestParam(defaultValue = "5") int size) {
+                                                    @RequestParam(defaultValue = "6") int size) {
         Page<Event> events = eventService.getAllEvents(page, size);
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
@@ -65,8 +67,16 @@ public class EventController {
     @PostMapping("/filters")
     ResponseEntity<Page<Event>> getWithFilters(@RequestBody EventDTO request,
                                                @RequestParam(defaultValue = "0") int page,
-                                               @RequestParam(defaultValue = "5") int size){
+                                               @RequestParam(defaultValue = "6") int size){
         Page<Event> events = eventService.getWithFilters(request, page, size);
         return new ResponseEntity<>(events, HttpStatus.OK);
+    }
+
+    @PostMapping("/report")
+    ResponseEntity<List<EventsReportDTO>> getReport(@RequestBody RequestEventReportDTO request){
+        return new ResponseEntity<>(eventService.getReport( request.getPlace_id(),
+                                                            request.getStart_time(),
+                                                            request.getEnd_time()),
+                                    HttpStatus.OK);
     }
 }
